@@ -2,6 +2,41 @@
 
 > An electron-vue project
 
+## first page
+- create a new map
+    - map name
+    - select location
+    - create new db
+    - go to main page
+- choose existing map
+    - go to main page
+
+## main page
+draw
+
+## new map page
+- import google map
+- draw
+    - draw toolbar
+    - layers (line, polygon, marker)
+        - point/marker (mark name)
+        - line (create road)
+        - polygon (create building)
+    - state
+        - save
+        - undo
+- plugin
+    - auto draw road
+- analysis
+    - distance matrix
+    - shortest path
+    - distance
+    - bearing
+
+# db schema
+- map: (db_name, starting location)
+- db_name: (layer, priority, text, geom)
+
 #### Build Setup
 
 ``` bash

@@ -28,7 +28,8 @@
         data() {
             return {
                 mapName: null,
-                selectedLocation: undefined
+                selectedLocation: undefined,
+                locationMarker: null
             };
         },
 
@@ -40,7 +41,17 @@
                 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             }).addTo(map);
 
+            fixMarkerIcon();
             addLocationPopup(map);
+
+            function fixMarkerIcon() {
+                delete L.Icon.Default.prototype._getIconUrl;
+                L.Icon.Default.mergeOptions({
+                    iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
+                    iconUrl: require('leaflet/dist/images/marker-icon.png'),
+                    shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
+                });
+            }
 
             function addLocationPopup(map) {
 
@@ -58,6 +69,11 @@
                 // click button event
                 L.DomEvent.on(btn, 'click', (e) => {
                     self.selectedLocation = currentLocation;
+                    if (self.locationMarker) {
+                        map.removeLayer(self.locationMarker);
+                    }
+                    self.locationMarker = L.marker(currentLocation).addTo(map);
+                    map.flyTo(currentLocation);
                     map.closePopup();
                     e.stopPropagation();
                 });
@@ -112,8 +128,6 @@
                 await db.query(`create database ${mapName}`);
                 await db.connect(mapName);
                 await db.query(require('db/script/preparedb.sql'));
-
-                db.endPool();
             }
         }
     }

@@ -1,10 +1,17 @@
 <template>
     <div id="wrapper">
-        <a @click="goBack">Go back!</a>
+        <header>
+            <a @click="goBack">Go back!!!</a>
+            <p>map name:{{$route.params.name}}, location: {{location}}</p>
+        </header>
 
-        <p>map name:{{$route.params.name}}, location: {{location}}</p>
+        <div class="container-fluid">
+            <div class="row">
+                <div id="map" class="col-10"></div>
+                <map-layers class="col"></map-layers>
+            </div>
 
-        <div id="map"></div>
+        </div>
     </div>
 </template>
 
@@ -13,9 +20,12 @@
     import 'leaflet/dist/leaflet.css'
     import 'leaflet-draw'
     import 'leaflet-draw/dist/leaflet.draw.css'
+    import MapLayers from './MapPage/MapLayers'
 
     export default {
         name: 'map-page',
+
+        components: {MapLayers},
 
         data() {
             return {};
@@ -91,7 +101,11 @@
 </script>
 
 <style>
+    header {
+        height: 10vh;
+    }
+
     #map {
-        height: 500px;
+        height: 90vh;
     }
 </style>

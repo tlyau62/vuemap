@@ -1,6 +1,6 @@
 <template>
     <div id="wrapper">
-        <a @click="goBack">Go back!</a>
+        <a @click="goBack">Go back</a>
 
         <form @submit.prevent="submit">
             <label>
@@ -43,6 +43,7 @@
 
             fixMarkerIcon();
             addLocationPopup(map);
+            db.connect();
 
             function fixMarkerIcon() {
                 delete L.Icon.Default.prototype._getIconUrl;
@@ -128,6 +129,12 @@
                 await db.query(`create database ${mapName}`);
                 await db.connect(mapName);
                 await db.query(require('db/script/preparedb.sql'));
+
+                // move to map page
+                this.$router.push({
+                    path: `/map/${mapName}`,
+                    query: {lat: selectedLocation.lat, lng: selectedLocation.lng}
+                })
             }
         }
     }

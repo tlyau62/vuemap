@@ -16,6 +16,11 @@ export default new Router({
             component: require('@/components/NewMapPage').default
         },
         {
+            path: '/map/:name',
+            name: 'map-page',
+            component: require('@/components/MapPage').default
+        },
+        {
             path: '*',
             redirect: '/'
         }

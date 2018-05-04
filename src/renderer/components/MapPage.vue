@@ -99,10 +99,21 @@
                     }
                 }));
 
-                map.on(L.Draw.Event.CREATED, function (event) {
-                    var layer = event.layer;
+                map.on(L.Draw.Event.CREATED, (e) => {
+                    const layer = e.layer;
+                    const layerType = e.layerType;
 
+                    // draw layer
                     drawnItems.addLayer(layer);
+
+                    console.log(e);
+
+                    // save to db
+                    self.saveFeature(layer, layerType);
+                });
+
+                map.on(L.Draw.Event.DELETED, (e) => {
+                    console.log(e);
                 });
 
             }
@@ -117,6 +128,61 @@
 
             connectDb() {
                 db.connect(this.$route.params.name);
+            },
+
+            layerToGeomText(layer, layerType) {
+                let geomType, geomText;
+
+                // decide geomtype
+                if (layerType === 'polyline') {
+                    geomType = 'LINESTRING';
+                } else if (layerType === 'circle') {
+                    geomType = 'POINT';
+                } else {
+                    geomType = 'POLYGON';
+                }
+
+                // create geomtext
+                if (Array.isArray(layer._latlngs)) { // line, polygon
+                    const latlngs = layer._latlngs;
+
+                    geomText = latlngs
+                        .map(latlng => {
+                            if (!Array.isArray(latlng)) {
+                                return latlng.lng + ' ' + latlng.lat;
+                            } else {
+                                return latlng.map(ll => ll.lng + ' ' + ll.lat).join()
+                            }
+                        }).join();
+
+                    // close the line to form polygon
+                    if (layerType !== 'polyline') {
+                        geomText += (',' + latlngs[0][0].lng + ' ' + latlngs[0][0].lat);
+                        geomText = '(' + geomText + ')';
+                    }
+
+                    return `ST_GeomFromText('${geomType}(${geomText})', 4326)`;
+                } else { // circle
+                    const latlng = layer._latlng;
+                    const radius = layer._mRadius;
+                    geomText = latlng.lng + ' ' + latlng.lat;
+                    return `ST_Buffer(ST_GeomFromText('${geomType}(${geomText})', 4326)::geography, ${radius})::geometry`
+                }
+
+            },
+
+            async saveFeature(layer, layerType) {
+                const rows = await db.query(`
+                    insert into feature(geom)
+                    select ${this.layerToGeomText(layer, layerType)} as geom
+                    returning id;
+                `);
+
+                console.log(rows);
+            },
+
+            loadFeature() {
+                // L.polygon([[22.401447, 114.091257], [22.395491, 114.092716], [22.405576, 114.099067]], {color: 'red'}).addTo(drawnItems);
             }
         }
     }

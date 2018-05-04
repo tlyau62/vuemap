@@ -20,7 +20,10 @@
     import 'leaflet/dist/leaflet.css'
     import 'leaflet-draw'
     import 'leaflet-draw/dist/leaflet.draw.css'
+    import 'leaflet-toolbar'
+    import 'leaflet-toolbar/dist/leaflet.toolbar.css'
     import MapLayers from './MapPage/MapLayers'
+    import MeasureToolbar from './MapPage/MeasureToolbar'
     import db from 'db/db'
 
     export default {
@@ -32,7 +35,7 @@
             return {};
         },
 
-        created () {
+        created() {
             this.connectDb();
         },
 
@@ -60,6 +63,11 @@
 
             // fix marker
             fixMarkerIcon();
+
+            // measure toolbar
+            new L.Toolbar2.MeasureToolbar({
+                position: 'topleft'
+            }).addTo(map);
 
             // add draw
             let drawnItems = L.featureGroup().addTo(map);

@@ -16,7 +16,7 @@ draw
 
 ## new map page
 - import google map
-- draw
+- draw, edit
     - draw toolbar
     - layers (line, polygon, marker)
         - point/marker (mark name)
@@ -25,6 +25,8 @@ draw
     - state
         - save
         - undo
+- query
+    - loc, how high?
 - plugin
     - auto draw road
 - analysis

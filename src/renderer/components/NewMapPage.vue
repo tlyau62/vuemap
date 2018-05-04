@@ -92,7 +92,8 @@
 
         },
         methods: {
-            goBack() {
+            async goBack() {
+                await db.endPool();
                 window.history.length > 1
                     ? this.$router.go(-1)
                     : this.$router.push('/')

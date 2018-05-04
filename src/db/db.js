@@ -15,9 +15,7 @@ export default {
     async connect(db_name) {
 
         // main
-        if (_global.pool) {
-            await _global.pool.end();
-        }
+        await this.endPool();
 
         // set pool for main proc
         _global.pool = new Pool({
@@ -36,9 +34,10 @@ export default {
         return _global.pool.query(`drop database ${oldDb}`);
     },
 
-    endPool() {
+    async endPool() {
         if (_global.pool) {
-            _global.pool.end();
+            await _global.pool.end();
+            _global.pool = null;
         }
     }
 

@@ -21,6 +21,7 @@
     import 'leaflet-draw'
     import 'leaflet-draw/dist/leaflet.draw.css'
     import MapLayers from './MapPage/MapLayers'
+    import db from 'db/db'
 
     export default {
         name: 'map-page',
@@ -31,6 +32,15 @@
             return {};
         },
 
+        created () {
+            this.connectDb();
+        },
+
+        watch: {
+            // call again the method if the route changes
+            '$route': 'connectDb'
+        },
+
         computed: {
             location() {
                 return L.latLng(this.$route.query).toString();
@@ -39,7 +49,6 @@
 
         mounted() {
             const self = this;
-            const mapName = self.$route.params.name;
             const location = L.latLng(self.$route.query);
 
             const map = L.map('map').setView(location, 15);
@@ -91,10 +100,15 @@
             }
         },
         methods: {
-            goBack() {
+            async goBack() {
+                await db.endPool();
                 window.history.length > 1
                     ? this.$router.go(-1)
-                    : this.$router.push('/')
+                    : this.$router.push('/');
+            },
+
+            connectDb() {
+                db.connect(this.$route.params.name);
             }
         }
     }

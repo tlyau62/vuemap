@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="86c28aa3-1ffe-4d07-8a36-3e5465575d25" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/renderer/components/MapPage.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/components/MapPage.vue" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -17,8 +16,8 @@
       <file leaf-file-name="MapPage.vue" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/renderer/components/MapPage.vue">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="238">
-              <caret line="148" column="31" lean-forward="true" selection-start-line="148" selection-start-column="31" selection-end-line="148" selection-end-column="31" />
+            <state relative-caret-position="316">
+              <caret line="189" column="100" selection-start-line="189" selection-start-column="100" selection-end-line="189" selection-end-column="100" />
               <folding>
                 <element signature="e#437#460#0" expanded="true" />
                 <element signature="e#0#6#0" expanded="true" />
@@ -71,7 +70,7 @@
       <find>Toolbar2.DrawToolbar</find>
       <find>marker</find>
       <find>l.draw.marker</find>
-      <find />
+      <find>function dis</find>
       <find>L.Draw.Feature.prototype._fireCreatedEvent</find>
       <find>_fireCreatedEvent</find>
       <find>L.Draw.Event.CREATED</find>
@@ -122,8 +121,8 @@
     </packageJsonPaths>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="39" />
-    <option name="y" value="82" />
+    <option name="x" value="-23" />
+    <option name="y" value="106" />
     <option name="width" value="1563" />
     <option name="height" value="906" />
   </component>
@@ -302,16 +301,15 @@
       <workItem from="1525335208705" duration="1598000" />
       <workItem from="1525336840619" duration="22311000" />
       <workItem from="1525362859079" duration="662000" />
-      <workItem from="1525363990047" duration="26873000" />
+      <workItem from="1525363990047" duration="27914000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="52133000" />
+    <option name="totallyTimeSpent" value="53174000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1295" height="704" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info anchor="right" id="Palette" order="3" />
       <window_info anchor="bottom" id="TODO" order="6" />
@@ -619,8 +617,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/renderer/components/MapPage.vue">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="238">
-          <caret line="148" column="31" lean-forward="true" selection-start-line="148" selection-start-column="31" selection-end-line="148" selection-end-column="31" />
+        <state relative-caret-position="316">
+          <caret line="189" column="100" selection-start-line="189" selection-start-column="100" selection-end-line="189" selection-end-column="100" />
           <folding>
             <element signature="e#437#460#0" expanded="true" />
             <element signature="e#0#6#0" expanded="true" />

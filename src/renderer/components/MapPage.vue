@@ -32,11 +32,14 @@
         components: {MapLayers},
 
         data() {
-            return {};
+            return {
+                drawnItems: L.featureGroup()
+            };
         },
 
-        created() {
-            this.connectDb();
+        async created() {
+            await db.connect(this.$route.params.name);
+            this.loadFeatures();
         },
 
         watch: {
@@ -70,7 +73,7 @@
             }).addTo(map);
 
             // add draw
-            let drawnItems = L.featureGroup().addTo(map);
+            const drawnItems = this.drawnItems.addTo(map);
             addDraw(drawnItems, map);
 
             function fixMarkerIcon() {
@@ -126,10 +129,6 @@
                     : this.$router.push('/');
             },
 
-            connectDb() {
-                db.connect(this.$route.params.name);
-            },
-
             layerToGeomText(layer, layerType) {
                 let geomType, geomText;
 
@@ -181,8 +180,14 @@
                 console.log(rows);
             },
 
-            loadFeature() {
-                // L.polygon([[22.401447, 114.091257], [22.395491, 114.092716], [22.405576, 114.099067]], {color: 'red'}).addTo(drawnItems);
+            async loadFeatures() {
+
+                const features = (await db.query(`
+                    select st_asgeojson(geom) as geom
+                    from feature;
+                `)).rows;
+
+                L.geoJSON(features.map(feature => JSON.parse(feature.geom))).addTo(this.drawnItems);
             }
         }
     }

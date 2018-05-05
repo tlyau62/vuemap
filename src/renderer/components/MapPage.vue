@@ -33,7 +33,8 @@
 
         data() {
             return {
-                drawnItems: L.featureGroup()
+                drawnItems: L.featureGroup(),
+                idLookup: {}
             };
         },
 
@@ -128,8 +129,31 @@
                     self.saveFeature(layer, layerType);
                 });
 
+                map.on(L.Draw.Event.EDITED, (e) => {
+                    const layers = e.layers._layers;
+                    const idLookup = self.idLookup;
+
+                    for (let key in layers) {
+                        if (!layers.hasOwnProperty(key)) {
+                            continue;
+                        }
+                        self.editFeature(idLookup[key].id, layers[key], idLookup[key].type);
+                    }
+                });
+
                 map.on(L.Draw.Event.DELETED, (e) => {
-                    console.log(e);
+                    const layers = e.layers._layers;
+                    const idLookup = self.idLookup;
+
+                    for (let key in layers) {
+                        if (!layers.hasOwnProperty(key)) {
+                            continue;
+                        }
+                        db.query(`
+                            delete from feature
+                            where id = ${idLookup[key].id};
+                        `);
+                    }
                 });
 
             }
@@ -193,24 +217,35 @@
                 console.log(rows);
             },
 
+            editFeature(id, layer, layerType) {
+                db.query(`
+                    update feature
+                    set geom = ${this.layerToGeomText(layer, layerType === 'LineString' ? 'polyline' : 'polygon')}
+                    where id = ${id}
+                `);
+            },
+
             async loadFeatures() {
                 const features = (await db.query(`
-                    select st_asgeojson(geom) as geom
+                    select id, st_asgeojson(geom) as geom
                     from feature;
                 `)).rows;
 
                 features.forEach(feature => {
+                    const id = feature.id;
                     const geom = JSON.parse(feature.geom);
                     let coordinates = geom.coordinates;
+                    let g;
 
                     if (geom.type === 'LineString') {
                         coordinates = coordinates.map(latlng => [latlng[1], latlng[0]]);
-                        L.polyline(coordinates).addTo(this.drawnItems);
+                        g = L.polyline(coordinates).addTo(this.drawnItems);
                     } else if (geom.type === 'Polygon') {
-                        coordinates = coordinates[0];
-                        coordinates = coordinates.map(latlng => [latlng[1], latlng[0]]);
-                        L.polygon(coordinates).addTo(this.drawnItems);
+                        coordinates = coordinates[0].map(latlng => [latlng[1], latlng[0]]);
+                        g = L.polygon(coordinates).addTo(this.drawnItems);
                     }
+
+                    this.idLookup[g._leaflet_id] = {id, type: geom.type};
                 });
 
                 // L.geoJSON(features.map(feature => JSON.parse(feature.geom))).addTo(this.drawnItems);

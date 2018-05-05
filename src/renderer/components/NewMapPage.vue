@@ -21,6 +21,8 @@
     import L from 'leaflet'
     import 'leaflet/dist/leaflet.css'
     import db from 'db/db'
+    import fs from 'fs'
+    import {execSync} from 'child_process'
 
     export default {
         name: 'new-map-page',
@@ -131,11 +133,29 @@
                 await db.connect(mapName);
                 await db.query(require('db/script/preparedb.sql'));
 
+                // import tilemill
+                this.importTilemill(mapName);
+
                 // move to map page
                 this.$router.push({
                     path: `/map/${mapName}`,
                     query: {lat: selectedLocation.lat, lng: selectedLocation.lng}
                 })
+            },
+
+            importTilemill(mapName) {
+                const tilemillConfig = JSON.parse(fs.readFileSync('MapBox\\project\\osm_origin\\project.mml', 'utf8'));
+
+                // copy origin folder
+                execSync(`xcopy MapBox\\project\\osm_origin MapBox\\project\\${mapName}\\ /s/h/e/k/f/c`);
+
+                // change datasource
+                const layer = tilemillConfig.Layer;
+                for (let i = 0; i < layer.length; i++) {
+                    layer[i].Datasource.dbname = mapName;
+                }
+                // change settings
+                fs.writeFileSync(`MapBox\\project\\${mapName}\\project.mml`, JSON.stringify(tilemillConfig), 'utf-8');
             }
         }
     }

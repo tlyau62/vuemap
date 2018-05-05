@@ -1,7 +1,7 @@
 <template>
     <div id="wrapper">
         <header>
-            <a @click="goBack">Go back!!!</a>
+            <a @click="goBack">Go back</a>
             <p>map name:{{$route.params.name}}, location: {{location}}</p>
         </header>
 
@@ -55,14 +55,27 @@
 
         mounted() {
             const self = this;
+            const mapName = this.$route.params.name;
             const location = L.latLng(self.$route.query);
 
             const map = L.map('map').setView(location, 15);
 
             // add tile
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            const baseTile = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             }).addTo(map);
+
+            const previewTile = L.tileLayer(`http://localhost:20008/tile/${mapName}/{z}/{x}/{y}.png?updated=${new Date().getTime()}`, {
+                minZoom: 0,
+                maxZoom: 18
+            });
+
+            L.control.layers({drawnItems: this.drawnItems, previewTile}).addTo(map);
+
+            // render preview
+            map.on('baselayerchange', (e) => {
+                previewTile.setUrl(`http://localhost:20008/tile/${mapName}/{z}/{x}/{y}.png?updated=${new Date().getTime()}`);
+            });
 
             // fix marker
             fixMarkerIcon();
@@ -181,7 +194,6 @@
             },
 
             async loadFeatures() {
-
                 const features = (await db.query(`
                     select st_asgeojson(geom) as geom
                     from feature;

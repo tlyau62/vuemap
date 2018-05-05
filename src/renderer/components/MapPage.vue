@@ -199,7 +199,21 @@
                     from feature;
                 `)).rows;
 
-                L.geoJSON(features.map(feature => JSON.parse(feature.geom))).addTo(this.drawnItems);
+                features.forEach(feature => {
+                    const geom = JSON.parse(feature.geom);
+                    let coordinates = geom.coordinates;
+
+                    if (geom.type === 'LineString') {
+                        coordinates = coordinates.map(latlng => [latlng[1], latlng[0]]);
+                        L.polyline(coordinates).addTo(this.drawnItems);
+                    } else if (geom.type === 'Polygon') {
+                        coordinates = coordinates[0];
+                        coordinates = coordinates.map(latlng => [latlng[1], latlng[0]]);
+                        L.polygon(coordinates).addTo(this.drawnItems);
+                    }
+                });
+
+                // L.geoJSON(features.map(feature => JSON.parse(feature.geom))).addTo(this.drawnItems);
             }
         }
     }

@@ -2,9 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="86c28aa3-1ffe-4d07-8a36-3e5465575d25" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/renderer/components/MapPage.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/components/MapPage.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/renderer/components/NewMapPage.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/components/NewMapPage.vue" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -18,8 +16,8 @@
       <file leaf-file-name="MapPage.vue" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/renderer/components/MapPage.vue">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="335">
-              <caret line="78" lean-forward="true" selection-start-line="78" selection-end-line="78" />
+            <state relative-caret-position="293">
+              <caret line="212" column="21" selection-start-line="212" selection-start-column="21" selection-end-line="212" selection-end-column="21" />
               <folding>
                 <element signature="e#437#460#0" expanded="true" />
                 <element signature="e#0#6#0" expanded="true" />
@@ -135,11 +133,11 @@
       <path value="$PROJECT_DIR$/package.json" />
     </packageJsonPaths>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="315" />
-    <option name="y" value="162" />
-    <option name="width" value="1563" />
-    <option name="height" value="780" />
+  <component name="ProjectFrameBounds">
+    <option name="x" value="126" />
+    <option name="y" value="103" />
+    <option name="width" value="1463" />
+    <option name="height" value="906" />
   </component>
   <component name="ProjectLevelVcsManager">
     <ConfirmationsSetting value="2" id="Add" />
@@ -317,15 +315,15 @@
       <workItem from="1525336840619" duration="22311000" />
       <workItem from="1525362859079" duration="662000" />
       <workItem from="1525363990047" duration="27914000" />
-      <workItem from="1525512690786" duration="7026000" />
+      <workItem from="1525512690786" duration="8986000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="60200000" />
+    <option name="totallyTimeSpent" value="62160000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-7" y="-7" width="1295" height="704" extended-state="6" />
+    <frame x="84" y="69" width="975" height="604" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info anchor="right" id="Palette" order="3" />
@@ -341,7 +339,7 @@
       <window_info anchor="bottom" id="Terminal" order="7" />
       <window_info id="Capture Tool" order="2" />
       <window_info id="Designer" order="2" />
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.22482435" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.29968783" />
       <window_info anchor="right" id="Database" order="3" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -571,12 +569,21 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/node_modules/leaflet-draw/dist/leaflet.draw.js">
-      <provider selected="true" editor-type-id="text-editor" />
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/node_modules/leaflet-draw/dist/leaflet.draw-src.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="87">
           <caret line="466" column="36" lean-forward="true" selection-start-line="466" selection-start-column="36" selection-end-line="466" selection-end-column="36" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -624,8 +631,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/renderer/components/MapPage.vue">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="335">
-          <caret line="78" lean-forward="true" selection-start-line="78" selection-end-line="78" />
+        <state relative-caret-position="293">
+          <caret line="212" column="21" selection-start-line="212" selection-start-column="21" selection-end-line="212" selection-end-column="21" />
           <folding>
             <element signature="e#437#460#0" expanded="true" />
             <element signature="e#0#6#0" expanded="true" />

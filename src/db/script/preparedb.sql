@@ -16,6 +16,9 @@ CREATE TABLE feature (
     priority integer,
     text varchar,
     geom geometry(Geometry,4326),
+    latlngs double precision[][2],
+    radius double precision,
+    geom_type varchar,
     CONSTRAINT feature_pkey PRIMARY KEY (id)
 )
 WITH (

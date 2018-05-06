@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="86c28aa3-1ffe-4d07-8a36-3e5465575d25" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/src/db/script/preparedb.sql" beforeDir="false" afterPath="$PROJECT_DIR$/src/db/script/preparedb.sql" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/renderer/components/MapPage.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/components/MapPage.vue" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -16,12 +17,21 @@
       <file leaf-file-name="MapPage.vue" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/renderer/components/MapPage.vue">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="153">
-              <caret line="219" column="47" selection-start-line="219" selection-start-column="47" selection-end-line="219" selection-end-column="47" />
+            <state relative-caret-position="378">
+              <caret line="255" column="80" selection-start-line="255" selection-start-column="80" selection-end-line="255" selection-end-column="80" />
               <folding>
                 <element signature="e#437#460#0" expanded="true" />
                 <element signature="e#0#6#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="preparedb.sql" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/db/script/preparedb.sql">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="340">
+              <caret line="20" column="4" selection-start-line="20" selection-start-column="4" selection-end-line="20" selection-end-column="13" />
             </state>
           </provider>
         </entry>
@@ -103,7 +113,6 @@
         <option value="$PROJECT_DIR$/src/db/db_ren.js" />
         <option value="$PROJECT_DIR$/src/main/index.js" />
         <option value="$PROJECT_DIR$/src/db/script/createmap.sql" />
-        <option value="$PROJECT_DIR$/src/db/script/preparedb.sql" />
         <option value="$PROJECT_DIR$/src/renderer/router/index.js" />
         <option value="$PROJECT_DIR$/.electron-vue/webpack.renderer.config.js" />
         <option value="$PROJECT_DIR$/src/renderer/components/MapPage/MapLayers.vue" />
@@ -115,6 +124,7 @@
         <option value="$PROJECT_DIR$/src/renderer/components/MapPage/MeasureToolbar.js" />
         <option value="$PROJECT_DIR$/README.md" />
         <option value="$PROJECT_DIR$/src/renderer/components/NewMapPage.vue" />
+        <option value="$PROJECT_DIR$/src/db/script/preparedb.sql" />
         <option value="$PROJECT_DIR$/src/renderer/components/MapPage.vue" />
       </list>
     </option>
@@ -134,8 +144,8 @@
     </packageJsonPaths>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="-179" />
-    <option name="y" value="96" />
+    <option name="x" value="-212" />
+    <option name="y" value="60" />
     <option name="width" value="1463" />
     <option name="height" value="914" />
   </component>
@@ -315,12 +325,12 @@
       <workItem from="1525336840619" duration="22311000" />
       <workItem from="1525362859079" duration="662000" />
       <workItem from="1525363990047" duration="27914000" />
-      <workItem from="1525512690786" duration="12585000" />
+      <workItem from="1525512690786" duration="19965000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="65759000" />
+    <option name="totallyTimeSpent" value="73139000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1295" height="704" extended-state="6" />
@@ -331,7 +341,7 @@
       <window_info anchor="right" id="Palette&#9;" order="3" />
       <window_info id="Image Layers" order="2" />
       <window_info anchor="right" id="Capture Analysis" order="3" />
-      <window_info anchor="bottom" id="Event Log" order="7" side_tool="true" />
+      <window_info anchor="bottom" id="Event Log" order="7" side_tool="true" weight="0.32998326" />
       <window_info anchor="right" id="Maven Projects" order="3" />
       <window_info anchor="bottom" id="Database Changes" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Version Control" order="7" />
@@ -540,13 +550,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/db/script/preparedb.sql">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="170">
-          <caret line="10" selection-start-line="10" selection-end-line="10" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/db/db.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="255">
@@ -629,10 +632,17 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/db/script/preparedb.sql">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="340">
+          <caret line="20" column="4" selection-start-line="20" selection-start-column="4" selection-end-line="20" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/renderer/components/MapPage.vue">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="153">
-          <caret line="219" column="47" selection-start-line="219" selection-start-column="47" selection-end-line="219" selection-end-column="47" />
+        <state relative-caret-position="378">
+          <caret line="255" column="80" selection-start-line="255" selection-start-column="80" selection-end-line="255" selection-end-column="80" />
           <folding>
             <element signature="e#437#460#0" expanded="true" />
             <element signature="e#0#6#0" expanded="true" />

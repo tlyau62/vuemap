@@ -123,8 +123,6 @@
                     // draw layer
                     drawnItems.addLayer(layer);
 
-                    console.log(e);
-
                     // save to db
                     self.saveFeature(layer, layerType);
                 });
@@ -137,7 +135,7 @@
                         if (!layers.hasOwnProperty(key)) {
                             continue;
                         }
-                        self.editFeature(idLookup[key].id, layers[key], idLookup[key].type);
+                        self.editFeature(idLookup[key].id, layers[key], idLookup[key].geom_type);
                     }
                 });
 
@@ -168,6 +166,9 @@
 
             layerToGeomText(layer, layerType) {
                 let geomType, geomText;
+                const latlngs = layer._latlngs;
+                const latlng = layer._latlng;
+                const radius = layer._mRadius;
 
                 // decide geomtype
                 if (layerType === 'polyline') {
@@ -179,74 +180,124 @@
                 }
 
                 // create geomtext
-                if (Array.isArray(layer._latlngs)) { // line, polygon
-                    const latlngs = layer._latlngs;
-
+                if (layerType === 'polyline') {
                     geomText = latlngs
-                        .map(latlng => {
-                            if (!Array.isArray(latlng)) {
-                                return latlng.lng + ' ' + latlng.lat;
-                            } else {
-                                return latlng.map(ll => ll.lng + ' ' + ll.lat).join()
-                            }
-                        }).join();
-
-                    // close the line to form polygon
-                    if (layerType !== 'polyline') {
-                        geomText += (',' + latlngs[0][0].lng + ' ' + latlngs[0][0].lat);
-                        geomText = '(' + geomText + ')';
-                    }
+                        .map(latlng => `${latlng.lng} ${latlng.lat}`).join();
 
                     return `ST_GeomFromText('${geomType}(${geomText})', 4326)`;
-                } else { // circle
-                    const latlng = layer._latlng;
-                    const radius = layer._mRadius;
+                } else if (layerType === 'polygon' || layerType === 'rectangle') {
+                    geomText = latlngs[0]
+                        .map(latlng => `${latlng.lng} ${latlng.lat}`).join();
+                    geomText += (',' + latlngs[0][0].lng + ' ' + latlngs[0][0].lat);
+                    geomText = '(' + geomText + ')';
+
+                    return `ST_GeomFromText('${geomType}(${geomText})', 4326)`;
+                } else if (layerType === 'circle') {
                     geomText = latlng.lng + ' ' + latlng.lat;
+
                     return `ST_Buffer(ST_GeomFromText('${geomType}(${geomText})', 4326)::geography, ${radius})::geometry`
                 }
 
             },
 
-            async saveFeature(layer, layerType) {
-                const rows = await db.query(`
-                    insert into feature(geom)
-                    select ${this.layerToGeomText(layer, layerType)} as geom
-                    returning id;
-                `);
+            layerToLatlngs(layer, layerType) {
+                let result;
+                if (layerType === 'polyline') {
+                    result = layer._latlngs
+                        .map(latlng => `{${latlng.lat}, ${latlng.lng}}`)
+                        .join()
+                } else if (layerType === 'polygon' || layerType === 'rectangle') {
+                    result = layer._latlngs[0]
+                        .map(latlng => `{${latlng.lat}, ${latlng.lng}}`)
+                        .join()
+                } else if (layerType === 'circle') {
+                    result = `{${layer._latlng.lat}, ${layer._latlng.lng}}`
+                }
 
-                console.log(rows);
+                return '{' + result + '}';
+
+                // console.log(layer);
+                // console.log(layerType);
+            },
+
+            async saveFeature(layer, layerType) {
+                let sql;
+                if (layerType === 'circle') {
+                    sql = `
+                        insert into feature(latlngs, radius, geom_type, geom)
+                        values ('${this.layerToLatlngs(layer, layerType)}', ${layer._mRadius}, '${layerType}', ${this.layerToGeomText(layer, layerType)})
+                        returning id;
+                    `
+                } else {
+                    sql = `
+                        insert into feature(latlngs, geom_type, geom)
+                        values ('${this.layerToLatlngs(layer, layerType)}', '${layerType}', ${this.layerToGeomText(layer, layerType)})
+                        returning id;
+                    `
+                }
+
+                const rows = (await db.query(sql)).rows;
+                this.idLookup[layer._leaflet_id] = {id: rows[0].id, geom_type: layerType};
             },
 
             editFeature(id, layer, layerType) {
-                db.query(`
-                    update feature
-                    set geom = ${this.layerToGeomText(layer, layerType === 'LineString' ? 'polyline' : 'polygon')}
-                    where id = ${id}
-                `);
+                let sql;
+                if (layerType === 'circle') {
+                    sql = `
+                        update feature
+                        set latlngs = '${this.layerToLatlngs(layer, layerType)}',
+                            radius = ${layer._mRadius},
+                            geom = ${this.layerToGeomText(layer, layerType)}
+                        where id = ${id}
+                    `;
+                } else {
+                    sql = `
+                        update feature
+                        set latlngs = '${this.layerToLatlngs(layer, layerType)}',
+                            geom = ${this.layerToGeomText(layer, layerType)}
+                        where id = ${id}
+                    `;
+                }
+                db.query(sql);
             },
 
             async loadFeatures() {
                 const features = (await db.query(`
-                    select id, st_asgeojson(geom) as geom
+                    select id, latlngs, radius, geom_type
                     from feature;
                 `)).rows;
+                let geom;
 
                 features.forEach(feature => {
-                    const id = feature.id;
-                    const geom = JSON.parse(feature.geom);
-                    let coordinates = geom.coordinates;
-                    let g;
+                    const {id, latlngs, radius, geom_type} = feature;
 
-                    if (geom.type === 'LineString') {
-                        coordinates = coordinates.map(latlng => [latlng[1], latlng[0]]);
-                        g = L.polyline(coordinates).addTo(this.drawnItems);
-                    } else if (geom.type === 'Polygon') {
-                        coordinates = coordinates[0].map(latlng => [latlng[1], latlng[0]]);
-                        g = L.polygon(coordinates).addTo(this.drawnItems);
+                    if (geom_type === 'circle') {
+                        // console.log(feature.latlngs);
+                        // console.log(radius);
+                        geom = L.circle(latlngs[0], {radius: radius}).addTo(this.drawnItems);
+                    } else {
+                        geom = L[geom_type](latlngs).addTo(this.drawnItems);
                     }
 
-                    this.idLookup[g._leaflet_id] = {id, type: geom.type};
+                    this.idLookup[geom._leaflet_id] = {id, geom_type};
                 });
+
+                // features.forEach(feature => {
+                //     const id = feature.id;
+                //     const geom = JSON.parse(feature.geom);
+                //     let coordinates = geom.coordinates;
+                //     let g;
+                //
+                //     if (geom.type === 'LineString') {
+                //         coordinates = coordinates.map(latlng => [latlng[1], latlng[0]]);
+                //         g = L.polyline(coordinates).addTo(this.drawnItems);
+                //     } else if (geom.type === 'Polygon') {
+                //         coordinates = coordinates[0].map(latlng => [latlng[1], latlng[0]]);
+                //         g = L.polygon(coordinates).addTo(this.drawnItems);
+                //     }
+                //
+                //     this.idLookup[g._leaflet_id] = {id, type: geom.type};
+                // });
 
                 // L.geoJSON(features.map(feature => JSON.parse(feature.geom))).addTo(this.drawnItems);
             }

@@ -18,10 +18,13 @@
 <script>
     import L from 'leaflet'
     import 'leaflet/dist/leaflet.css'
-    import 'leaflet-draw'
-    import 'leaflet-draw/dist/leaflet.draw.css'
+    import 'leaflet-editable/src/Leaflet.Editable'
     import 'leaflet-toolbar'
     import 'leaflet-toolbar/dist/leaflet.toolbar.css'
+    import 'leaflet-geometryutil/src/leaflet.geometryutil'
+    import 'leaflet-snap/leaflet.snap'
+    import './MapPage/Action/Edit'
+    import './MapPage/Action/Draw'
     import MapLayers from './MapPage/MapLayers'
     import MeasureToolbar from './MapPage/MeasureToolbar'
     import db from 'db/db'
@@ -33,6 +36,7 @@
 
         data() {
             return {
+                map: null,
                 drawnItems: L.featureGroup(),
                 idLookup: {}
             };
@@ -59,7 +63,10 @@
             const mapName = this.$route.params.name;
             const location = L.latLng(self.$route.query);
 
-            const map = L.map('map').setView(location, 15);
+            const map = this.map = L.map('map', {editable: true}).setView(location, 15);
+
+            // fix marker
+            fixMarkerIcon();
 
             // add tile
             const baseTile = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -78,17 +85,64 @@
                 previewTile.setUrl(`http://localhost:20008/tile/${mapName}/{z}/{x}/{y}.png?updated=${new Date().getTime()}`);
             });
 
-            // fix marker
-            fixMarkerIcon();
-
-            // measure toolbar
-            new L.Toolbar2.MeasureToolbar({
-                position: 'topleft'
-            }).addTo(map);
-
             // add draw
             const drawnItems = this.drawnItems.addTo(map);
-            addDraw(drawnItems, map);
+
+            new L.Toolbar2.Control({
+                position: 'topleft',
+                actions: [
+                    L.Toolbar2.DrawAction.Polyline,
+                    L.Toolbar2.DrawAction.Polygon,
+                    L.Toolbar2.DrawAction.Rectangle,
+                    L.Toolbar2.DrawAction.Circle
+                ]
+            }).addTo(map);
+
+            // map.on('edit.delete', (e) => {
+            //     console.log(e);
+            // });
+
+            map.on('DRAW_ACTION.COMMIT', (e) => {
+                const layer = e.layer;
+                console.log(layer);
+
+                // draw layer
+                drawnItems.addLayer(layer);
+
+                // save to db
+                self.saveFeature(layer);
+            });
+
+            map.on('EDIT_ACTION.DELETE', (e) => {
+                const layers = e.layers._layers;
+                const idLookup = self.idLookup;
+
+                for (let key in layers) {
+                    if (!layers.hasOwnProperty(key)) continue;
+                    db.query(`
+                        delete from feature
+                        where id = ${idLookup[key].id};
+                    `);
+                }
+            });
+
+            map.on('EDIT_ACTION.SAVE', (e) => {
+                const layers = e.layers._layers;
+                const idLookup = self.idLookup;
+
+                for (let key in layers) {
+                    if (!layers.hasOwnProperty(key)) continue;
+                    self.editFeature(idLookup[key].id, layers[key], idLookup[key].geom_type);
+                }
+            });
+
+            // measure toolbar
+            // new L.Toolbar2.MeasureToolbar({
+            //     position: 'topleft'
+            // }).addTo(map);
+            //
+
+            // addDraw(drawnItems, map);
 
             function fixMarkerIcon() {
                 delete L.Icon.Default.prototype._getIconUrl;
@@ -116,43 +170,43 @@
                     }
                 }));
 
-                map.on(L.Draw.Event.CREATED, (e) => {
-                    const layer = e.layer;
-                    const layerType = e.layerType;
+                // map.on(L.Draw.Event.CREATED, (e) => {
+                //     const layer = e.layer;
+                //     const layerType = e.layerType;
+                //
+                //     // draw layer
+                //     drawnItems.addLayer(layer);
+                //
+                //     // save to db
+                //     self.saveFeature(layer, layerType);
+                // });
 
-                    // draw layer
-                    drawnItems.addLayer(layer);
+                // map.on(L.Draw.Event.EDITED, (e) => {
+                //     const layers = e.layers._layers;
+                //     const idLookup = self.idLookup;
+                //
+                //     for (let key in layers) {
+                //         if (!layers.hasOwnProperty(key)) {
+                //             continue;
+                //         }
+                //         self.editFeature(idLookup[key].id, layers[key], idLookup[key].geom_type);
+                //     }
+                // });
 
-                    // save to db
-                    self.saveFeature(layer, layerType);
-                });
-
-                map.on(L.Draw.Event.EDITED, (e) => {
-                    const layers = e.layers._layers;
-                    const idLookup = self.idLookup;
-
-                    for (let key in layers) {
-                        if (!layers.hasOwnProperty(key)) {
-                            continue;
-                        }
-                        self.editFeature(idLookup[key].id, layers[key], idLookup[key].geom_type);
-                    }
-                });
-
-                map.on(L.Draw.Event.DELETED, (e) => {
-                    const layers = e.layers._layers;
-                    const idLookup = self.idLookup;
-
-                    for (let key in layers) {
-                        if (!layers.hasOwnProperty(key)) {
-                            continue;
-                        }
-                        db.query(`
-                            delete from feature
-                            where id = ${idLookup[key].id};
-                        `);
-                    }
-                });
+                // map.on(L.Draw.Event.DELETED, (e) => {
+                //     const layers = e.layers._layers;
+                //     const idLookup = self.idLookup;
+                //
+                //     for (let key in layers) {
+                //         if (!layers.hasOwnProperty(key)) {
+                //             continue;
+                //         }
+                //         db.query(`
+                //             delete from feature
+                //             where id = ${idLookup[key].id};
+                //         `);
+                //     }
+                // });
 
             }
         },
@@ -164,8 +218,9 @@
                     : this.$router.push('/');
             },
 
-            layerToGeomText(layer, layerType) {
+            layerToGeomText(layer) {
                 let geomType, geomText;
+                const layerType = this.getLayerType(layer);
                 const latlngs = layer._latlngs;
                 const latlng = layer._latlng;
                 const radius = layer._mRadius;
@@ -200,38 +255,58 @@
 
             },
 
-            layerToLatlngs(layer, layerType) {
+            layerToLatlngs(layer) {
+                const layerType = this.getLayerType(layer);
                 let result;
                 if (layerType === 'polyline') {
                     result = layer._latlngs
                         .map(latlng => `{${latlng.lat}, ${latlng.lng}}`)
-                        .join()
+                        .join();
                 } else if (layerType === 'polygon' || layerType === 'rectangle') {
                     result = layer._latlngs[0]
                         .map(latlng => `{${latlng.lat}, ${latlng.lng}}`)
-                        .join()
+                        .join();
                 } else if (layerType === 'circle') {
-                    result = `{${layer._latlng.lat}, ${layer._latlng.lng}}`
+                    result = `{${layer._latlng.lat}, ${layer._latlng.lng}}`;
                 }
 
                 return '{' + result + '}';
-
-                // console.log(layer);
-                // console.log(layerType);
             },
 
-            async saveFeature(layer, layerType) {
+            getLayerType(layer) {
+                let type;
+                if (layer instanceof L.Circle) {
+                    type = 'circle';
+                } else if (layer instanceof L.Marker) {
+                    type = 'marker';
+                } else if ((layer instanceof L.Polyline) && !(layer instanceof L.Polygon)) {
+                    type = 'polyline';
+                } else if ((layer instanceof L.Polygon) && !(layer instanceof L.Rectangle)) {
+                    type = 'polygon';
+                } else if (layer instanceof L.Rectangle) {
+                    type = 'rectangle';
+                } else {
+                    type = undefined;
+                    console.log('error: getLayerType');
+                }
+
+                return type;
+            },
+
+            async saveFeature(layer) {
+
+                const layerType = this.getLayerType(layer);
                 let sql;
                 if (layerType === 'circle') {
                     sql = `
                         insert into feature(latlngs, radius, geom_type, geom)
-                        values ('${this.layerToLatlngs(layer, layerType)}', ${layer._mRadius}, '${layerType}', ${this.layerToGeomText(layer, layerType)})
+                        values ('${this.layerToLatlngs(layer)}', ${layer._mRadius}, '${layerType}', ${this.layerToGeomText(layer)})
                         returning id;
                     `
                 } else {
                     sql = `
                         insert into feature(latlngs, geom_type, geom)
-                        values ('${this.layerToLatlngs(layer, layerType)}', '${layerType}', ${this.layerToGeomText(layer, layerType)})
+                        values ('${this.layerToLatlngs(layer)}', '${layerType}', ${this.layerToGeomText(layer)})
                         returning id;
                     `
                 }
@@ -240,21 +315,22 @@
                 this.idLookup[layer._leaflet_id] = {id: rows[0].id, geom_type: layerType};
             },
 
-            editFeature(id, layer, layerType) {
+            editFeature(id, layer) {
+                const layerType = this.getLayerType(layer);
                 let sql;
                 if (layerType === 'circle') {
                     sql = `
                         update feature
-                        set latlngs = '${this.layerToLatlngs(layer, layerType)}',
+                        set latlngs = '${this.layerToLatlngs(layer)}',
                             radius = ${layer._mRadius},
-                            geom = ${this.layerToGeomText(layer, layerType)}
+                            geom = ${this.layerToGeomText(layer)}
                         where id = ${id}
                     `;
                 } else {
                     sql = `
                         update feature
-                        set latlngs = '${this.layerToLatlngs(layer, layerType)}',
-                            geom = ${this.layerToGeomText(layer, layerType)}
+                        set latlngs = '${this.layerToLatlngs(layer)}',
+                            geom = ${this.layerToGeomText(layer)}
                         where id = ${id}
                     `;
                 }
@@ -266,40 +342,32 @@
                     select id, latlngs, radius, geom_type
                     from feature;
                 `)).rows;
-                let geom;
+
 
                 features.forEach(feature => {
                     const {id, latlngs, radius, geom_type} = feature;
+                    let geom;
 
                     if (geom_type === 'circle') {
-                        // console.log(feature.latlngs);
-                        // console.log(radius);
                         geom = L.circle(latlngs[0], {radius: radius}).addTo(this.drawnItems);
                     } else {
                         geom = L[geom_type](latlngs).addTo(this.drawnItems);
                     }
 
+                    geom.on('click', (e) => {
+                        new L.Toolbar2.Popup(e.latlng, {
+                            actions: [
+                                L.Toolbar2.EditAction.Edit,
+                                L.Toolbar2.EditAction.Save,
+                                L.Toolbar2.EditAction.Delete,
+                                L.Toolbar2.EditAction.Cancel
+                            ]
+                        }).addTo(this.map, geom);
+                    });
+
                     this.idLookup[geom._leaflet_id] = {id, geom_type};
                 });
 
-                // features.forEach(feature => {
-                //     const id = feature.id;
-                //     const geom = JSON.parse(feature.geom);
-                //     let coordinates = geom.coordinates;
-                //     let g;
-                //
-                //     if (geom.type === 'LineString') {
-                //         coordinates = coordinates.map(latlng => [latlng[1], latlng[0]]);
-                //         g = L.polyline(coordinates).addTo(this.drawnItems);
-                //     } else if (geom.type === 'Polygon') {
-                //         coordinates = coordinates[0].map(latlng => [latlng[1], latlng[0]]);
-                //         g = L.polygon(coordinates).addTo(this.drawnItems);
-                //     }
-                //
-                //     this.idLookup[g._leaflet_id] = {id, type: geom.type};
-                // });
-
-                // L.geoJSON(features.map(feature => JSON.parse(feature.geom))).addTo(this.drawnItems);
             }
         }
     }

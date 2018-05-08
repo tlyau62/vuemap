@@ -98,13 +98,20 @@
                 ]
             }).addTo(map);
 
-            // map.on('edit.delete', (e) => {
-            //     console.log(e);
-            // });
-
             map.on('DRAW_ACTION.COMMIT', (e) => {
                 const layer = e.layer;
-                console.log(layer);
+
+                // add edit action
+                layer.on('click', (e) => {
+                    new L.Toolbar2.Popup(e.latlng, {
+                        actions: [
+                            L.Toolbar2.EditAction.Edit,
+                            L.Toolbar2.EditAction.Save,
+                            L.Toolbar2.EditAction.Delete,
+                            L.Toolbar2.EditAction.Cancel
+                        ]
+                    }).addTo(this.map, layer);
+                });
 
                 // draw layer
                 drawnItems.addLayer(layer);
@@ -170,43 +177,6 @@
                     }
                 }));
 
-                // map.on(L.Draw.Event.CREATED, (e) => {
-                //     const layer = e.layer;
-                //     const layerType = e.layerType;
-                //
-                //     // draw layer
-                //     drawnItems.addLayer(layer);
-                //
-                //     // save to db
-                //     self.saveFeature(layer, layerType);
-                // });
-
-                // map.on(L.Draw.Event.EDITED, (e) => {
-                //     const layers = e.layers._layers;
-                //     const idLookup = self.idLookup;
-                //
-                //     for (let key in layers) {
-                //         if (!layers.hasOwnProperty(key)) {
-                //             continue;
-                //         }
-                //         self.editFeature(idLookup[key].id, layers[key], idLookup[key].geom_type);
-                //     }
-                // });
-
-                // map.on(L.Draw.Event.DELETED, (e) => {
-                //     const layers = e.layers._layers;
-                //     const idLookup = self.idLookup;
-                //
-                //     for (let key in layers) {
-                //         if (!layers.hasOwnProperty(key)) {
-                //             continue;
-                //         }
-                //         db.query(`
-                //             delete from feature
-                //             where id = ${idLookup[key].id};
-                //         `);
-                //     }
-                // });
 
             }
         },

@@ -4036,6 +4036,10 @@ leaflet-toolbar@^0.4.0-alpha.1:
   version "0.4.0-alpha.1"
   resolved "https://registry.yarnpkg.com/leaflet-toolbar/-/leaflet-toolbar-0.4.0-alpha.1.tgz#276a4c914b616895047d5eb585f6ef432b17f01e"
 
+leaflet-tooltip@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/leaflet-tooltip/-/leaflet-tooltip-1.0.4.tgz#a5b305bd4a428f8888a1d0f9cd8a31833c67b089"
+
 leaflet@>=0.7.0, leaflet@^1.3.1:
   version "1.3.1"
   resolved "https://registry.yarnpkg.com/leaflet/-/leaflet-1.3.1.tgz#86f336d2fb0e2d0ff446677049a5dc34cf0ea60e"

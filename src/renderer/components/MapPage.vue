@@ -143,6 +143,7 @@
                 }
             });
 
+
             // measure toolbar
             // new L.Toolbar2.MeasureToolbar({
             //     position: 'topleft'
@@ -247,8 +248,6 @@
                 let type;
                 if (layer instanceof L.Circle) {
                     type = 'circle';
-                } else if (layer instanceof L.Marker) {
-                    type = 'marker';
                 } else if ((layer instanceof L.Polyline) && !(layer instanceof L.Polygon)) {
                     type = 'polyline';
                 } else if ((layer instanceof L.Polygon) && !(layer instanceof L.Rectangle)) {

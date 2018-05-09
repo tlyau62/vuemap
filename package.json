@@ -59,6 +59,7 @@
     "leaflet-geometryutil": "^0.8.1",
     "leaflet-snap": "^0.0.4",
     "leaflet-toolbar": "^0.4.0-alpha.1",
+    "leaflet-tooltip": "^1.0.4",
     "pg": "^7.4.1",
     "popper.js": "^1.14.3",
     "raw-loader": "^0.5.1",

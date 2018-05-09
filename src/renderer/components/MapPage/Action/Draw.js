@@ -4,6 +4,9 @@ import 'leaflet-geometryutil/src/leaflet.geometryutil'
 import 'leaflet-draw'
 import 'leaflet-tooltip/dist/L.Tooltip'
 import 'leaflet-tooltip/dist/tooltip.css'
+import 'leaflet-toolbar'
+import 'leaflet-toolbar/dist/leaflet.toolbar.css'
+import {getDirection} from './Common'
 
 const action = L.Toolbar2.Action.extend({
     initialize(map, options) {
@@ -46,7 +49,6 @@ const action = L.Toolbar2.Action.extend({
         this._destroyEvents();
     },
 
-
     _createTooltip() {
         const map = this._map;
         const bounds = map.getBounds().pad(0.25);
@@ -74,7 +76,7 @@ const action = L.Toolbar2.Action.extend({
             let text;
 
             if (layer instanceof L.Circle) {
-                if (layer._point) {
+                if (started && layer._point) {
                     let radius, area, bearing;
                     radius = Math.round(layer.getRadius());
                     area = Math.round(Math.PI * (radius * radius));
@@ -147,7 +149,7 @@ const action = L.Toolbar2.Action.extend({
                 // L.marker([22.397816430619542, 114.14040350450921]).addTo(map);
                 // L.marker([22.397816430619542, 114.14365768432619]).addTo(map);
 
-                if (shapeLatlngs.length === 4) {
+                if (started && shapeLatlngs.length === 4) {
                     let area, perimeter, bearing;
 
                     perimeter = Math.round(L.GeometryUtil.length(shapeLatlngs.concat([shapeLatlngs[0]])));
@@ -174,27 +176,6 @@ const action = L.Toolbar2.Action.extend({
             return text;
         }
 
-        function getDirection(degree) {
-            let dir;
-            if (degree > -22.5 && degree <= 22.5) {
-                dir = '↑';
-            } else if (degree > 22.5 && degree <= 67.5) {
-                dir = '↗';
-            } else if (degree > 67.5 && degree <= 112.5) {
-                dir = '→';
-            } else if (degree > 112.5 && degree <= 157.5) {
-                dir = '↘';
-            } else if (degree > -157.5 && degree <= -112.5) {
-                dir = '↙';
-            } else if (degree > -112.5 && degree <= -67.5) {
-                dir = '←';
-            } else if (degree > -67.5 && degree <= -22.5) {
-                dir = '↖';
-            } else {
-                dir = '↓';
-            }
-            return dir;
-        }
     },
 
     _registerEvent(name, handler) {

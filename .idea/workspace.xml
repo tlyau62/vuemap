@@ -2,12 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="86c28aa3-1ffe-4d07-8a36-3e5465575d25" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/vuemap.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vuemap.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/renderer/components/MapPage/Action/Common.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/renderer/components/MapPage.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/components/MapPage.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/renderer/components/MapPage/Action/Draw.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/components/MapPage/Action/Draw.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/yarn.lock" beforeDir="false" afterPath="$PROJECT_DIR$/yarn.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/renderer/components/MapPage/Action/Edit.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/components/MapPage/Action/Edit.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -18,14 +16,63 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="Draw.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="MapPage.vue" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/renderer/components/MapPage.vue">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="255">
+              <caret line="21" column="4" selection-start-line="21" selection-start-column="4" selection-end-line="22" selection-end-column="53" />
+              <folding>
+                <element signature="e#0#6#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Draw.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/renderer/components/MapPage/Action/Draw.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-216">
-              <caret line="160" column="93" selection-start-line="160" selection-start-column="93" selection-end-line="160" selection-end-column="93" />
+            <state relative-caret-position="2071">
+              <caret line="151" column="31" selection-start-line="151" selection-start-column="31" selection-end-line="151" selection-end-column="31" />
               <folding>
                 <element signature="e#0#57#0" expanded="true" />
+                <element signature="n#style#0;n#span#0;n#div#4;n#div#0;n#!!top" expanded="true" />
+                <element signature="n#style#0;n#span#0;n#div#3;n#div#0;n#!!top" expanded="true" />
+                <element signature="n#style#0;n#span#0;n#div#4;n#div#0;n#!!top" expanded="true" />
+                <element signature="n#style#0;n#span#0;n#div#4;n#div#0;n#!!top" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Edit.js" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/renderer/components/MapPage/Action/Edit.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-1430">
+              <caret line="76" column="62" selection-start-line="76" selection-start-column="62" selection-end-line="76" selection-end-column="62" />
+              <folding>
+                <element signature="e#0#24#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Common.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/renderer/components/MapPage/Action/Common.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="51">
+              <caret line="3" column="7" selection-start-line="3" selection-start-column="7" selection-end-line="3" selection-end-column="21" />
+              <folding>
+                <element signature="e#0#24#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="DrawSubAction.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/renderer/components/MapPage/Action/DrawSubAction.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-457">
+              <caret line="8" column="3" lean-forward="true" selection-start-line="8" selection-start-column="3" selection-end-line="8" selection-end-column="3" />
             </state>
           </provider>
         </entry>
@@ -34,9 +81,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>_onMouseUp</find>
-      <find>this._onMouseDown</find>
-      <find>_onMouseDown</find>
       <find>L.Draw.m</find>
       <find>L.contro</find>
       <find>L.Toolbar2</find>
@@ -64,6 +108,9 @@
       <find>instance</find>
       <find>consol</find>
       <find>layer</find>
+      <find>getto</find>
+      <find>bea</find>
+      <find>console</find>
     </findStrings>
     <replaceStrings>
       <replace>layer instanceof L.Polyline</replace>
@@ -100,11 +147,13 @@
         <option value="$PROJECT_DIR$/src/renderer/components/NewMapPage.vue" />
         <option value="$PROJECT_DIR$/src/db/script/preparedb.sql" />
         <option value="$PROJECT_DIR$/src/renderer/components/MapPage/Action/Edit/Cancel.js" />
-        <option value="$PROJECT_DIR$/src/renderer/components/MapPage/Action/Edit.js" />
         <option value="$PROJECT_DIR$/src/renderer/components/MapPage/Action/DrawAction.js" />
         <option value="$PROJECT_DIR$/src/renderer/components/MapPage/Action/DrawSubAction.js" />
         <option value="$PROJECT_DIR$/src/renderer/components/MapPage.vue" />
+        <option value="$PROJECT_DIR$/src/renderer/components/MapPage/Action/Tooltip.js" />
+        <option value="$PROJECT_DIR$/src/renderer/components/MapPage/Action/Common.js" />
         <option value="$PROJECT_DIR$/src/renderer/components/MapPage/Action/Draw.js" />
+        <option value="$PROJECT_DIR$/src/renderer/components/MapPage/Action/Edit.js" />
       </list>
     </option>
   </component>
@@ -123,8 +172,8 @@
     </packageJsonPaths>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="33" />
-    <option name="y" value="108" />
+    <option name="x" value="397" />
+    <option name="y" value="60" />
     <option name="width" value="1464" />
     <option name="height" value="903" />
   </component>
@@ -323,12 +372,12 @@
       <workItem from="1525362859079" duration="662000" />
       <workItem from="1525363990047" duration="27914000" />
       <workItem from="1525512690786" duration="19965000" />
-      <workItem from="1525846769694" duration="3416000" />
+      <workItem from="1525846769694" duration="10024000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="119305000" />
+    <option name="totallyTimeSpent" value="125913000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1295" height="704" extended-state="6" />
@@ -401,19 +450,16 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/renderer/components/MapPage/MeasureToolbar.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="765">
-          <caret line="45" column="76" selection-start-line="45" selection-start-column="76" selection-end-line="45" selection-end-column="76" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/renderer/components/MapPage/Action/Draw.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2482">
           <caret line="146" column="48" selection-start-line="146" selection-start-column="48" selection-end-line="146" selection-end-column="48" />
           <folding>
             <element signature="e#0#57#0" expanded="true" />
+            <element signature="n#style#0;n#span#0;n#div#4;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#span#0;n#div#3;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#span#0;n#div#4;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#span#0;n#div#4;n#div#0;n#!!top" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -605,7 +651,13 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/renderer/router/index.js">
-      <provider selected="true" editor-type-id="text-editor" />
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <folding>
+            <element signature="e#0#21#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/renderer/main.js">
       <provider selected="true" editor-type-id="text-editor">
@@ -681,17 +733,13 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/renderer/components/MapPage/Action/Edit.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="340">
-          <caret line="20" column="34" selection-start-line="20" selection-start-column="34" selection-end-line="20" selection-end-column="34" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/node_modules/leaflet-draw/dist/leaflet.draw-src.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="512">
           <caret line="1837" column="31" selection-start-line="1837" selection-start-column="31" selection-end-line="1837" selection-end-column="31" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -703,7 +751,13 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/node_modules/leaflet-draw/dist/leaflet.draw.js">
-      <provider selected="true" editor-type-id="text-editor" />
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/renderer/components/MapPage/Toolbar/DrawToolbar.js">
       <provider selected="true" editor-type-id="text-editor">
@@ -733,29 +787,53 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/renderer/components/MapPage/Action/DrawSubAction.js">
+    <entry file="file://$PROJECT_DIR$/src/renderer/components/MapPage.vue">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="527">
-          <caret line="31" column="3" selection-start-line="31" selection-start-column="3" selection-end-line="31" selection-end-column="3" />
+        <state relative-caret-position="255">
+          <caret line="21" column="4" selection-start-line="21" selection-start-column="4" selection-end-line="22" selection-end-column="53" />
+          <folding>
+            <element signature="e#0#6#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/renderer/components/MapPage.vue">
+    <entry file="file://$PROJECT_DIR$/src/renderer/components/MapPage/Action/DrawSubAction.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1275">
-          <caret line="86" selection-start-line="86" selection-end-line="86" />
+        <state relative-caret-position="-457">
+          <caret line="8" column="3" lean-forward="true" selection-start-line="8" selection-start-column="3" selection-end-line="8" selection-end-column="3" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/renderer/components/MapPage/Action/Common.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="51">
+          <caret line="3" column="7" selection-start-line="3" selection-start-column="7" selection-end-line="3" selection-end-column="21" />
           <folding>
-            <element signature="e#434#457#0" expanded="true" />
+            <element signature="e#0#24#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/renderer/components/MapPage/Action/Draw.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-216">
-          <caret line="160" column="93" selection-start-line="160" selection-start-column="93" selection-end-line="160" selection-end-column="93" />
+        <state relative-caret-position="2071">
+          <caret line="151" column="31" selection-start-line="151" selection-start-column="31" selection-end-line="151" selection-end-column="31" />
           <folding>
             <element signature="e#0#57#0" expanded="true" />
+            <element signature="n#style#0;n#span#0;n#div#4;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#span#0;n#div#3;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#span#0;n#div#4;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#span#0;n#div#4;n#div#0;n#!!top" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/renderer/components/MapPage/Action/Edit.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1430">
+          <caret line="76" column="62" selection-start-line="76" selection-start-column="62" selection-end-line="76" selection-end-column="62" />
+          <folding>
+            <element signature="e#0#24#0" expanded="true" />
           </folding>
         </state>
       </provider>

@@ -6,7 +6,6 @@ import 'leaflet-tooltip/dist/L.Tooltip'
 import 'leaflet-tooltip/dist/tooltip.css'
 import 'leaflet-toolbar'
 import 'leaflet-toolbar/dist/leaflet.toolbar.css'
-import {getDirection} from './Common'
 
 const action = L.Toolbar2.Action.extend({
     initialize(map, options) {
@@ -174,6 +173,28 @@ const action = L.Toolbar2.Action.extend({
             }
 
             return text;
+        }
+
+        function getDirection(degree) {
+            let dir;
+            if (degree > -22.5 && degree <= 22.5) {
+                dir = '↑';
+            } else if (degree > 22.5 && degree <= 67.5) {
+                dir = '↗';
+            } else if (degree > 67.5 && degree <= 112.5) {
+                dir = '→';
+            } else if (degree > 112.5 && degree <= 157.5) {
+                dir = '↘';
+            } else if (degree > -157.5 && degree <= -112.5) {
+                dir = '↙';
+            } else if (degree > -112.5 && degree <= -67.5) {
+                dir = '←';
+            } else if (degree > -67.5 && degree <= -22.5) {
+                dir = '↖';
+            } else {
+                dir = '↓';
+            }
+            return dir;
         }
 
     },

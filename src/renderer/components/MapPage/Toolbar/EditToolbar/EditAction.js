@@ -1,6 +1,3 @@
-import L from "leaflet";
-import {getDirection} from "./Common";
-
 const action = L.Toolbar2.Action.extend({
     initialize(map, shape, options) {
         this._map = map;

@@ -23,10 +23,10 @@
     import 'leaflet-toolbar/dist/leaflet.toolbar.css'
     import 'leaflet-geometryutil/src/leaflet.geometryutil'
     import 'leaflet-snap/leaflet.snap'
-    import './MapPage/Action/Edit'
-    import './MapPage/Action/Draw'
+    import './MapPage/Toolbar/DrawToolbar/DrawToolbar'
+    import './MapPage/Toolbar/EditToolbar/EditToolbar'
+    import './MapPage/Toolbar/QueryToolbar/QueryToolbar'
     import MapLayers from './MapPage/MapLayers'
-    import MeasureToolbar from './MapPage/MeasureToolbar'
     import db from 'db/db'
 
     export default {
@@ -85,17 +85,16 @@
                 previewTile.setUrl(`http://localhost:20008/tile/${mapName}/{z}/{x}/{y}.png?updated=${new Date().getTime()}`);
             });
 
-            // add draw
+            // add query toolbars
+            new L.Toolbar2.QueryToolbar({
+                position: 'topleft'
+            }).addTo(map);
+
+            // add draw, edit toolbars
             const drawnItems = this.drawnItems.addTo(map);
 
-            new L.Toolbar2.Control({
-                position: 'topleft',
-                actions: [
-                    L.Toolbar2.DrawAction.Polyline,
-                    L.Toolbar2.DrawAction.Polygon,
-                    L.Toolbar2.DrawAction.Rectangle,
-                    L.Toolbar2.DrawAction.Circle
-                ]
+            new L.Toolbar2.DrawToolbar({
+                position: 'topleft'
             }).addTo(map);
 
             map.on('DRAW_ACTION.COMMIT', (e) => {
@@ -103,14 +102,8 @@
 
                 // add edit action
                 layer.on('click', (e) => {
-                    new L.Toolbar2.Popup(e.latlng, {
-                        actions: [
-                            L.Toolbar2.EditAction.Edit,
-                            L.Toolbar2.EditAction.Save,
-                            L.Toolbar2.EditAction.Delete,
-                            L.Toolbar2.EditAction.Cancel
-                        ]
-                    }).addTo(this.map, layer);
+                    new L.Toolbar2.EditToolbar(e.latlng)
+                        .addTo(this.map, layer);
                 });
 
                 // draw layer
@@ -119,6 +112,7 @@
                 // save to db
                 self.saveFeature(layer);
             });
+
 
             map.on('EDIT_ACTION.DELETE', (e) => {
                 const layers = e.layers._layers;
@@ -143,15 +137,6 @@
                 }
             });
 
-
-            // measure toolbar
-            // new L.Toolbar2.MeasureToolbar({
-            //     position: 'topleft'
-            // }).addTo(map);
-            //
-
-            // addDraw(drawnItems, map);
-
             function fixMarkerIcon() {
                 delete L.Icon.Default.prototype._getIconUrl;
                 L.Icon.Default.mergeOptions({
@@ -161,25 +146,6 @@
                 });
             }
 
-            function addDraw(editableLayers, map) {
-
-                map.addControl(new L.Control.Draw({
-                    edit: {
-                        featureGroup: drawnItems,
-                        poly: {
-                            allowIntersection: false
-                        }
-                    },
-                    draw: {
-                        polygon: {
-                            allowIntersection: false,
-                            showArea: true
-                        }
-                    }
-                }));
-
-
-            }
         },
         methods: {
             async goBack() {
@@ -349,5 +315,10 @@
 
     #map {
         height: 90vh;
+    }
+
+    .mouse-marker {
+        background-color: #fff;
+        cursor: crosshair;
     }
 </style>

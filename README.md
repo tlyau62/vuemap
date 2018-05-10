@@ -26,14 +26,16 @@ draw
         - save
         - undo
 - query
-    - loc, how high?
+    - place
+    - elevation
 - plugin
-    - auto draw road
+    - *auto draw road
 - analysis
-    - distance matrix
-    - shortest path
+    - *distance matrix
+    - *shortest path
     - distance
     - bearing
+    - *elevation profile
 
 # db schema
 - map: (db_name, starting location)

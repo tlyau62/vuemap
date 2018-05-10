@@ -6,7 +6,8 @@ import './QueryAction'
 L.Toolbar2.QueryToolbar = L.Toolbar2.Control.extend({
     options: {
         actions: [
-            L.Toolbar2.QueryAction.Place
+            L.Toolbar2.QueryAction.Place,
+            L.Toolbar2.QueryAction.Elavtion
         ],
         className: 'mb-0'
     }

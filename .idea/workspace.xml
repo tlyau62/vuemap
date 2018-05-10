@@ -2,22 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="86c28aa3-1ffe-4d07-8a36-3e5465575d25" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/src/renderer/components/MapPage/Action/Query.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/renderer/components/MapPage/Toolbar/DrawToolbar/DrawAction.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/renderer/components/MapPage/Toolbar/DrawToolbar/DrawSubAction.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/renderer/components/MapPage/Toolbar/EditToolbar/EditAction.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/renderer/components/MapPage/Toolbar/EditToolbar/EditToolbar.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/renderer/components/MapPage/Toolbar/QueryToolbar/QueryAction.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/renderer/components/MapPage/Toolbar/QueryToolbar/QueryToolbar.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/renderer/components/MapPage.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/components/MapPage.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/renderer/components/MapPage/Action/Common.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/renderer/components/MapPage/Action/Draw.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/components/MapPage/Action/Draw.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/renderer/components/MapPage/Action/Edit.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/components/MapPage/Action/Edit.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/renderer/components/MapPage/MeasureToolbar.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/components/MapPage/Toolbar/MeasureToolbar.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/renderer/components/MapPage/Toolbar/DrawToolbar.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/components/MapPage/Toolbar/DrawToolbar/DrawToolbar.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/yarn.lock" beforeDir="false" afterPath="$PROJECT_DIR$/yarn.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/renderer/components/MapPage/Toolbar/EditToolbar/EditAction.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/components/MapPage/Toolbar/EditToolbar/EditAction.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/renderer/components/MapPage/Toolbar/QueryToolbar/QueryAction.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/components/MapPage/Toolbar/QueryToolbar/QueryAction.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/renderer/components/MapPage/Toolbar/QueryToolbar/QueryToolbar.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/components/MapPage/Toolbar/QueryToolbar/QueryToolbar.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -28,100 +16,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="MapPage.vue" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/renderer/components/MapPage.vue">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="272">
-              <caret line="28" column="47" selection-start-line="28" selection-start-column="47" selection-end-line="28" selection-end-column="47" />
-              <folding>
-                <element signature="e#0#6#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="QueryToolbar.js" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/renderer/components/MapPage/Toolbar/QueryToolbar/QueryToolbar.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="136">
-              <caret line="8" column="28" selection-start-line="8" selection-start-column="28" selection-end-line="8" selection-end-column="28" />
-              <folding>
-                <element signature="e#0#24#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="QueryAction.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/renderer/components/MapPage/Toolbar/QueryToolbar/QueryAction.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="306">
-              <caret line="18" column="6" lean-forward="true" selection-start-line="18" selection-start-column="6" selection-end-line="18" selection-end-column="6" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Edit.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/renderer/components/MapPage/Action/Edit.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state>
-              <caret column="24" selection-start-column="24" selection-end-column="24" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="DrawToolbar.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/renderer/components/MapPage/Toolbar/DrawToolbar/DrawToolbar.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state>
-              <caret selection-end-line="4" selection-end-column="24" />
-              <folding>
-                <element signature="e#0#23#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="EditToolbar.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/renderer/components/MapPage/Toolbar/EditToolbar/EditToolbar.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="85">
-              <caret line="5" selection-start-line="5" selection-end-line="5" selection-end-column="22" />
-              <folding>
-                <element signature="e#0#23#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="EditAction.js" pinned="false" current-in-tab="false">
+      <file leaf-file-name="EditAction.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/renderer/components/MapPage/Toolbar/EditToolbar/EditAction.js">
-          <provider selected="true" editor-type-id="text-editor" />
-        </entry>
-      </file>
-      <file leaf-file-name="MapLayers.vue" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/renderer/components/MapPage/MapLayers.vue">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="187">
-              <caret line="11" selection-start-line="11" selection-end-line="11" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="LandingPage.vue" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/renderer/components/LandingPage.vue">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="790">
-              <caret line="63" column="12" selection-start-line="63" selection-start-column="12" selection-end-line="63" selection-end-column="12" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="MeasureToolbar.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/renderer/components/MapPage/Toolbar/MeasureToolbar.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2006">
-              <caret line="123" column="3" lean-forward="true" selection-start-line="123" selection-start-column="3" selection-end-line="123" selection-end-column="3" />
+            <state relative-caret-position="767">
+              <caret line="226" column="3" selection-start-line="226" selection-start-column="3" selection-end-line="226" selection-end-column="3" />
             </state>
           </provider>
         </entry>
@@ -192,7 +91,6 @@
         <option value="$PROJECT_DIR$/src/renderer/components/LandingPage.vue" />
         <option value="$PROJECT_DIR$/src/renderer/components/MapPage/MeasureToolbarActions.js" />
         <option value="$PROJECT_DIR$/src/renderer/components/MapPage/MeasureToolbar.js" />
-        <option value="$PROJECT_DIR$/README.md" />
         <option value="$PROJECT_DIR$/src/renderer/components/NewMapPage.vue" />
         <option value="$PROJECT_DIR$/src/db/script/preparedb.sql" />
         <option value="$PROJECT_DIR$/src/renderer/components/MapPage/Action/Edit/Cancel.js" />
@@ -206,11 +104,12 @@
         <option value="$PROJECT_DIR$/src/renderer/components/MapPage/Toolbar/MeasureToolbar.js" />
         <option value="$PROJECT_DIR$/src/renderer/components/MapPage/Toolbar/DrawToolbar.js" />
         <option value="$PROJECT_DIR$/src/renderer/components/MapPage/Toolbar/DrawToolbar/DrawToolbar.js" />
-        <option value="$PROJECT_DIR$/src/renderer/components/MapPage/Toolbar/EditToolbar/EditAction.js" />
         <option value="$PROJECT_DIR$/src/renderer/components/MapPage/Toolbar/EditToolbar/EditToolbar.js" />
-        <option value="$PROJECT_DIR$/src/renderer/components/MapPage/Toolbar/QueryToolbar/QueryAction.js" />
         <option value="$PROJECT_DIR$/src/renderer/components/MapPage.vue" />
         <option value="$PROJECT_DIR$/src/renderer/components/MapPage/Toolbar/QueryToolbar/QueryToolbar.js" />
+        <option value="$PROJECT_DIR$/src/renderer/components/MapPage/Toolbar/QueryToolbar/QueryAction.js" />
+        <option value="$PROJECT_DIR$/README.md" />
+        <option value="$PROJECT_DIR$/src/renderer/components/MapPage/Toolbar/EditToolbar/EditAction.js" />
       </list>
     </option>
   </component>
@@ -229,10 +128,10 @@
     </packageJsonPaths>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="352" />
-    <option name="y" value="58" />
+    <option name="x" value="70" />
+    <option name="y" value="34" />
     <option name="width" value="1604" />
-    <option name="height" value="1010" />
+    <option name="height" value="975" />
   </component>
   <component name="ProjectLevelVcsManager">
     <ConfirmationsSetting value="2" id="Add" />
@@ -318,15 +217,6 @@
               <item name="renderer" type="462c0819:PsiDirectoryNode" />
               <item name="components" type="462c0819:PsiDirectoryNode" />
               <item name="MapPage" type="462c0819:PsiDirectoryNode" />
-              <item name="Action" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="vuemap" type="b2602c69:ProjectViewProjectNode" />
-              <item name="vuemap" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="renderer" type="462c0819:PsiDirectoryNode" />
-              <item name="components" type="462c0819:PsiDirectoryNode" />
-              <item name="MapPage" type="462c0819:PsiDirectoryNode" />
               <item name="Toolbar" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -337,17 +227,7 @@
               <item name="components" type="462c0819:PsiDirectoryNode" />
               <item name="MapPage" type="462c0819:PsiDirectoryNode" />
               <item name="Toolbar" type="462c0819:PsiDirectoryNode" />
-              <item name="DrawToolbar" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="vuemap" type="b2602c69:ProjectViewProjectNode" />
-              <item name="vuemap" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="renderer" type="462c0819:PsiDirectoryNode" />
-              <item name="components" type="462c0819:PsiDirectoryNode" />
-              <item name="MapPage" type="462c0819:PsiDirectoryNode" />
-              <item name="Toolbar" type="462c0819:PsiDirectoryNode" />
-              <item name="QueryToolbar" type="462c0819:PsiDirectoryNode" />
+              <item name="EditToolbar" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="vuemap" type="b2602c69:ProjectViewProjectNode" />
@@ -454,12 +334,12 @@
       <workItem from="1525362859079" duration="662000" />
       <workItem from="1525363990047" duration="27914000" />
       <workItem from="1525512690786" duration="19965000" />
-      <workItem from="1525846769694" duration="18181000" />
+      <workItem from="1525846769694" duration="19338000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="134070000" />
+    <option name="totallyTimeSpent" value="135227000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1295" height="704" extended-state="6" />
@@ -702,16 +582,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/README.md">
-      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
-        <state split_layout="SPLIT">
-          <first_editor relative-caret-position="374">
-            <caret line="28" column="20" selection-start-line="28" selection-start-column="20" selection-end-line="28" selection-end-column="20" />
-          </first_editor>
-          <second_editor />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/renderer/components/NewMapPage.vue">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="764">
@@ -832,13 +702,6 @@
     <entry file="file://$PROJECT_DIR$/src/renderer/components/MapPage/Toolbar/DrawToolbar/DrawSubAction.js">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/renderer/components/MapPage/Toolbar/DrawToolbar/DrawAction.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="17">
-          <caret line="1" selection-start-line="1" selection-end-line="1" selection-end-column="23" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/renderer/components/MapPage/Action/Edit.js">
       <provider selected="true" editor-type-id="text-editor">
         <state>
@@ -846,20 +709,17 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/renderer/components/LandingPage.vue">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="790">
-          <caret line="63" column="12" selection-start-line="63" selection-start-column="12" selection-end-line="63" selection-end-column="12" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/renderer/components/MapPage/Toolbar/EditToolbar/EditAction.js">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/renderer/components/MapPage/MapLayers.vue">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="187">
           <caret line="11" selection-start-line="11" selection-end-line="11" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/renderer/components/MapPage/Toolbar/MeasureToolbar.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2006">
+          <caret line="123" column="3" lean-forward="true" selection-start-line="123" selection-start-column="3" selection-end-line="123" selection-end-column="3" />
         </state>
       </provider>
     </entry>
@@ -873,6 +733,13 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/renderer/components/MapPage/Toolbar/DrawToolbar/DrawAction.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="17">
+          <caret line="1" selection-start-line="1" selection-end-line="1" selection-end-column="23" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/renderer/components/MapPage/Toolbar/DrawToolbar/DrawToolbar.js">
       <provider selected="true" editor-type-id="text-editor">
         <state>
@@ -883,23 +750,43 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/renderer/components/MapPage/Toolbar/MeasureToolbar.js">
+    <entry file="file://$PROJECT_DIR$/src/renderer/components/LandingPage.vue">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2006">
-          <caret line="123" column="3" lean-forward="true" selection-start-line="123" selection-start-column="3" selection-end-line="123" selection-end-column="3" />
+        <state relative-caret-position="869">
+          <caret line="63" column="12" selection-start-line="63" selection-start-column="12" selection-end-line="63" selection-end-column="12" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/renderer/components/MapPage/Toolbar/QueryToolbar/QueryToolbar.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="153">
+          <caret line="9" column="43" selection-start-line="9" selection-start-column="43" selection-end-line="9" selection-end-column="43" />
+          <folding>
+            <element signature="e#0#24#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/renderer/components/MapPage/Toolbar/QueryToolbar/QueryAction.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="306">
-          <caret line="18" column="6" lean-forward="true" selection-start-line="18" selection-start-column="6" selection-end-line="18" selection-end-column="6" />
+        <state relative-caret-position="385">
+          <caret line="163" column="23" lean-forward="true" selection-start-line="163" selection-start-column="23" selection-end-line="163" selection-end-column="23" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/README.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+        <state split_layout="SPLIT">
+          <first_editor relative-caret-position="425">
+            <caret line="37" column="4" selection-start-line="37" selection-start-column="4" selection-end-line="37" selection-end-column="4" />
+          </first_editor>
+          <second_editor />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/renderer/components/MapPage.vue">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="272">
+        <state relative-caret-position="476">
           <caret line="28" column="47" selection-start-line="28" selection-start-column="47" selection-end-line="28" selection-end-column="47" />
           <folding>
             <element signature="e#0#6#0" expanded="true" />
@@ -907,13 +794,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/renderer/components/MapPage/Toolbar/QueryToolbar/QueryToolbar.js">
+    <entry file="file://$PROJECT_DIR$/src/renderer/components/MapPage/Toolbar/EditToolbar/EditAction.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="136">
-          <caret line="8" column="28" selection-start-line="8" selection-start-column="28" selection-end-line="8" selection-end-column="28" />
-          <folding>
-            <element signature="e#0#24#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="767">
+          <caret line="226" column="3" selection-start-line="226" selection-start-column="3" selection-end-line="226" selection-end-column="3" />
         </state>
       </provider>
     </entry>

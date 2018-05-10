@@ -290,14 +290,8 @@
                     }
 
                     geom.on('click', (e) => {
-                        new L.Toolbar2.Popup(e.latlng, {
-                            actions: [
-                                L.Toolbar2.EditAction.Edit,
-                                L.Toolbar2.EditAction.Save,
-                                L.Toolbar2.EditAction.Delete,
-                                L.Toolbar2.EditAction.Cancel
-                            ]
-                        }).addTo(this.map, geom);
+                        new L.Toolbar2.EditToolbar(e.latlng)
+                            .addTo(this.map, geom);
                     });
 
                     this.idLookup[geom._leaflet_id] = {id, geom_type};
@@ -320,5 +314,10 @@
     .mouse-marker {
         background-color: #fff;
         cursor: crosshair;
+    }
+
+    .detail-popup {
+        width: auto;
+        max-width: none;
     }
 </style>

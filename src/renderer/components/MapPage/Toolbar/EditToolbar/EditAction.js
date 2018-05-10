@@ -1,3 +1,5 @@
+import {LayerDetail} from './EditUtil'
+
 const action = L.Toolbar2.Action.extend({
     initialize(map, shape, options) {
         this._map = map;
@@ -8,12 +10,25 @@ const action = L.Toolbar2.Action.extend({
 
     // Called when the handler is enabled, should add event hooks.
     addHooks() {
-        this.removeHooks();
+        this.disable();
     },
 
     removeHooks() {
         // remove toolbar
         this._map.removeLayer(this.toolbar);
+    },
+
+    _registerEvent(name, handler) {
+        this._handlers.push({name, handler});
+        this._map.on(name, handler);
+        return this;
+    },
+
+    _destroyEvents() {
+        const map = this._map;
+        this._handlers.forEach(event => {
+            map.off(event.name, event.handler);
+        });
     }
 });
 
@@ -71,8 +86,7 @@ L.Toolbar2.EditAction.Edit = action.extend({
             (e) => this.removeHooks()
         );
 
-        function getTooltipText(layer, started, mouseLatlng) {
-            let text;
+        function getTooltipText(layer, started) {
 
             if (!started) {
                 return `
@@ -82,63 +96,34 @@ L.Toolbar2.EditAction.Edit = action.extend({
                     </div>`;
             }
 
-            if (layer instanceof L.Circle) {
-                let radius, area;
-                radius = Math.round(layer.getRadius());
-                area = Math.round(Math.PI * (radius * radius));
+            let text;
+            const layerDetail = new LayerDetail(layer);
 
+            if (layer instanceof L.Circle) {
                 text = `
                     <div>
-                        <div><span>Radius:</span> ${radius} m</div>
-                        <div><span>Area:</span> ${area} m</div>
+                        ${layerDetail.detailTemplate}
                         <div>---</div>
                         <div>Release to <span style="color: #B3E5FC">finish</span> drawing</div>
                     </div>`;
             } else if ((layer instanceof L.Polyline) && !(layer instanceof L.Polygon)) {
-                const shapeLatlngs = layer._latlngs;
-                let length;
-
-                length = Math.round(L.GeometryUtil.length(shapeLatlngs.concat([mouseLatlng])));
-
                 text = `
                     <div>
-                        <div><span>Length:</span> ${length} m</div>
+                        ${layerDetail.detailTemplate}
                         <div>---</div>
                         <div>Click last point to <span style="color: #B3E5FC">finish</span> drawing</div>
                     </div>`;
             } else if ((layer instanceof L.Polygon) && !(layer instanceof L.Rectangle)) {
-                const shapeLatlngs = layer._latlngs[0];
-                const firstShapeLatlng = shapeLatlngs[0];
-                const lastShapeLatlng = shapeLatlngs[shapeLatlngs.length - 1];
-                let area, perimeter;
-
-                if (shapeLatlngs.length === 1) {
-                    perimeter = Math.round(L.GeometryUtil.length(shapeLatlngs.concat([mouseLatlng])));
-                } else {
-                    // including 1st and last point of current shape
-                    perimeter = Math.round(L.GeometryUtil.length(shapeLatlngs.concat([mouseLatlng, firstShapeLatlng])));
-                }
-                area = Math.round(L.GeometryUtil.geodesicArea(shapeLatlngs.concat([mouseLatlng])));
-
                 text = `
                     <div>
-                        <div><span>Area:</span> ${area} m</div>
-                        <div><span>Parameter:</span> ${perimeter} m</div>
+                        ${layerDetail.detailTemplate}
                         <div>---</div>
                         <div>Click last point to <span style="color: #B3E5FC">finish</span> drawing</div>
                     </div>`;
             } else if (layer instanceof L.Rectangle) {
-                const shapeLatlngs = layer._latlngs[0];
-
-                let area, perimeter;
-
-                perimeter = Math.round(L.GeometryUtil.length(shapeLatlngs.concat([shapeLatlngs[0]])));
-                area = Math.round(L.GeometryUtil.geodesicArea(shapeLatlngs));
-
                 text = `
                     <div>
-                        <div><span>Area:</span> ${area} m</div>
-                        <div><span>Parameter:</span> ${perimeter} m</div>
+                        ${layerDetail.detailTemplate}
                         <div>---</div>
                         <div>Release to <span style="color: #B3E5FC">finish</span> drawing</div>
                     </div>`;
@@ -150,20 +135,8 @@ L.Toolbar2.EditAction.Edit = action.extend({
             return text;
         }
 
-    },
-
-    _registerEvent(name, handler) {
-        this._handlers.push({name, handler});
-        this._map.on(name, handler);
-        return this;
-    },
-
-    _destroyEvents() {
-        const map = this._map;
-        this._handlers.forEach(event => {
-            map.off(event.name, event.handler);
-        });
     }
+
 });
 
 L.Toolbar2.EditAction.Save = action.extend({
@@ -204,4 +177,30 @@ L.Toolbar2.EditAction.Cancel = action.extend({
     }
 });
 
+L.Toolbar2.EditAction.Detail = action.extend({
+    options: {
+        toolbarIcon: {html: 'Detail'}
+    },
+
+    addHooks() {
+        const map = this._map;
+        const shape = this._shape;
+        const detail = new LayerDetail(shape);
+        const popup = L.popup().setContent(detail.detailTemplateWithChart);
+
+        // markerdata.bindPopup(popup, { offset: L.Point(0,16) }).addTo(m);
+
+        shape.bindPopup(popup, {className: 'detail-popup', maxWidth: 500}).openPopup();
+
+        this._registerEvent(
+            'popupclose',
+            (e) => {
+                this._destroyEvents();
+                shape.unbindPopup();
+            }
+        );
+
+        action.prototype.addHooks.call(this);
+    }
+});
 

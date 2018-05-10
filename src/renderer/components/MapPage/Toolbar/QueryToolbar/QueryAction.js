@@ -1,4 +1,4 @@
-import axios from "axios/index";
+import axios from "axios";
 
 L.Toolbar2.QueryAction = {};
 

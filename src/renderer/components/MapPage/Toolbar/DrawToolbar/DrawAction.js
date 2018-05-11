@@ -227,10 +227,12 @@ const action = L.Toolbar2.Action.extend({
         let formVm = new form();
         formVm.$mount('#modal');
         formVm.$on('FORM_SEND', (formData) => {
-            // remove the wrapper
+
+            // remove modal
             formVm.$destroy();
             modalWrapper.remove();
 
+            // embed form
             if (formData === 'cancel') {
                 this.disable();
             } else {

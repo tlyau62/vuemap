@@ -131,7 +131,7 @@
 
                 for (let key in layers) {
                     if (!layers.hasOwnProperty(key)) continue;
-                    self.editFeature(idLookup[key].id, layers[key], idLookup[key].geom_type);
+                    self.editFeature(idLookup[key].id, layers[key]);
                 }
             });
 
@@ -250,6 +250,7 @@
             },
 
             editFeature(id, layer) {
+                const {name, type} = layer.info;
                 const layerType = this.getLayerType(layer);
                 let sql;
                 if (layerType === 'circle') {
@@ -257,14 +258,18 @@
                         update feature
                         set latlngs = '${this.layerToLatlngs(layer)}',
                             radius = ${layer._mRadius},
-                            geom = ${this.layerToGeomText(layer)}
+                            geom = ${this.layerToGeomText(layer)},
+                            name = '${name}',
+                            type = '${type}'
                         where id = ${id}
                     `;
                 } else {
                     sql = `
                         update feature
                         set latlngs = '${this.layerToLatlngs(layer)}',
-                            geom = ${this.layerToGeomText(layer)}
+                            geom = ${this.layerToGeomText(layer)},
+                            name = '${name}',
+                            type = '${type}'
                         where id = ${id}
                     `;
                 }

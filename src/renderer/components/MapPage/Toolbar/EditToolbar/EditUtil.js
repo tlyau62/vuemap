@@ -1,5 +1,7 @@
 import axios from 'axios'
 import Chart from 'chart.js'
+import Vue from 'vue';
+import EditDetail from './EditDetail'
 
 export class LayerDetail {
     constructor(layer) {
@@ -21,37 +23,24 @@ export class LayerDetail {
     }
 
     get detailTemplateWithChart() {
-        const info = this.layer.info;
-        const detail = this.calcDetail(true, true);
-        const container = document.createElement('div');
-        let item;
+        const formWrapper = $('<div id="formWrapper"></div>')[0];
+        const form = Vue.extend(EditDetail);
+        const formVm = new form({
+            propsData: {
+                layer: this.layer,
+                detail: this.calcDetail(true, true) // calc geom
+            }
+        }).$mount();
 
-        // add info
-        item = $(`<div><span>Name</span>: ${info.name}</div>`)[0];
-        container.appendChild(item);
+        const cleanup = () => {
+            formVm.$destroy();
+            this.layer._map.off('popupclose', cleanup);
+        };
+        this.layer._map.on('popupclose', cleanup);
 
-        item = $(`<div><span>Type</span>: ${info.type}</div>`)[0];
-        container.appendChild(item);
+        formWrapper.appendChild(formVm.$el);
 
-        // add geom calc
-        for (let key in detail) {
-            if (!detail.hasOwnProperty(key) || key === 'chart') continue;
-
-            item = $(`<div><span>${key}</span>: ${detail[key]}</div>`)[0];
-            container.appendChild(item);
-        }
-
-        // add chart
-        if (detail.chart) {
-            const wrapper = $('<div style="width: 400px">loading...</div>')[0];
-            container.appendChild(wrapper);
-            detail.chart.then(chart => {
-                wrapper.innerHTML = '';
-                wrapper.appendChild(chart);
-            });
-        }
-
-        return container;
+        return formWrapper;
     }
 
     calcDetail(isUnit, isAddChart) {

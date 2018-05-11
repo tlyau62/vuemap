@@ -25,6 +25,7 @@ draw
     - state
         - save
         - undo
+    - *add name, layer, priority, color
 - query
     - place
     - elevation
@@ -35,7 +36,7 @@ draw
     - *shortest path
     - distance
     - bearing
-    - *elevation profile
+    - elevation profile
 
 # db schema
 - map: (db_name, starting location)

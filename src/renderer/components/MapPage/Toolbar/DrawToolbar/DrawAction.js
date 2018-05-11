@@ -1,4 +1,5 @@
 import {Save, Undo, Redo, Discard} from './DrawSubAction'
+import Vue from 'vue'
 import L from 'leaflet'
 import 'leaflet-geometryutil/src/leaflet.geometryutil'
 import 'leaflet-draw'
@@ -6,6 +7,7 @@ import 'leaflet-tooltip/dist/L.Tooltip'
 import 'leaflet-tooltip/dist/tooltip.css'
 import 'leaflet-toolbar'
 import 'leaflet-toolbar/dist/leaflet.toolbar.css'
+import DrawNewLayer from './DrawNewLayer.vue'
 
 const action = L.Toolbar2.Action.extend({
     initialize(map, options) {
@@ -26,7 +28,7 @@ const action = L.Toolbar2.Action.extend({
         this._registerEvent(
             'editable:drawing:commit',
             (e) => {
-                this.removeHooks();
+                this.disable();
                 map.fire('DRAW_ACTION.COMMIT', {layer: e.layer});
             }
         );
@@ -39,13 +41,18 @@ const action = L.Toolbar2.Action.extend({
         const map = this._map;
 
         // disable edit
-        this._shape.disableEdit();
+        if (this._shape) {
+            this._shape.disableEdit();
+        }
 
         // remove tooltip
-        map.removeLayer(this._tooltip);
+        if (this._tooltip) {
+            map.removeLayer(this._tooltip);
+        }
 
         // remove handlers
         this._destroyEvents();
+
     },
 
     _createTooltip() {
@@ -210,6 +217,28 @@ const action = L.Toolbar2.Action.extend({
         this._handlers.forEach(event => {
             map.off(event.name, event.handler);
         });
+    },
+
+    _createForm(shape) {
+        const modalWrapper = $('<div id="modal"></div>');
+        modalWrapper.appendTo('body');
+
+        const form = Vue.extend(DrawNewLayer);
+        let formVm = new form();
+        formVm.$mount('#modal');
+        formVm.$on('FORM_SEND', (formData) => {
+            // remove the wrapper
+            formVm.$destroy();
+            modalWrapper.remove();
+
+            if (formData === 'cancel') {
+                this.disable();
+            } else {
+                this._shape = shape;
+                this._shape.info = formData.feature;
+                action.prototype.addHooks.call(this);
+            }
+        });
     }
 
 });
@@ -225,11 +254,12 @@ L.Toolbar2.DrawAction.Polyline = action.extend({
     },
 
     addHooks() {
-        this._shape = this._map.editTools.startPolyline();
-        action.prototype.addHooks.call(this);
+        action.prototype._createForm.call(
+            this,
+            this._map.editTools.startPolyline()
+        );
     }
 });
-
 
 L.Toolbar2.DrawAction.Polygon = action.extend({
     options: {
@@ -240,8 +270,10 @@ L.Toolbar2.DrawAction.Polygon = action.extend({
     },
 
     addHooks() {
-        this._shape = this._map.editTools.startPolygon();
-        action.prototype.addHooks.call(this);
+        action.prototype._createForm.call(
+            this,
+            this._map.editTools.startPolygon()
+        );
     }
 });
 
@@ -254,8 +286,10 @@ L.Toolbar2.DrawAction.Rectangle = action.extend({
     },
 
     addHooks() {
-        this._shape = this._map.editTools.startRectangle();
-        action.prototype.addHooks.call(this);
+        action.prototype._createForm.call(
+            this,
+            this._map.editTools.startRectangle()
+        );
     }
 });
 
@@ -267,7 +301,9 @@ L.Toolbar2.DrawAction.Circle = action.extend({
         })
     },
     addHooks() {
-        this._shape = this._map.editTools.startCircle();
-        action.prototype.addHooks.call(this);
+        action.prototype._createForm.call(
+            this,
+            this._map.editTools.startCircle()
+        );
     }
 });

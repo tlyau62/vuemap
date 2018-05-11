@@ -21,10 +21,19 @@ export class LayerDetail {
     }
 
     get detailTemplateWithChart() {
+        const info = this.layer.info;
         const detail = this.calcDetail(true, true);
         const container = document.createElement('div');
         let item;
 
+        // add info
+        item = $(`<div><span>Name</span>: ${info.name}</div>`)[0];
+        container.appendChild(item);
+
+        item = $(`<div><span>Type</span>: ${info.type}</div>`)[0];
+        container.appendChild(item);
+
+        // add geom calc
         for (let key in detail) {
             if (!detail.hasOwnProperty(key) || key === 'chart') continue;
 
@@ -32,6 +41,7 @@ export class LayerDetail {
             container.appendChild(item);
         }
 
+        // add chart
         if (detail.chart) {
             const wrapper = $('<div style="width: 400px">loading...</div>')[0];
             container.appendChild(wrapper);

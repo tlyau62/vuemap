@@ -10,7 +10,6 @@
                 <div id="map" class="col-10"></div>
                 <map-layers class="col"></map-layers>
             </div>
-
         </div>
     </div>
 </template>
@@ -112,7 +111,6 @@
                 // save to db
                 self.saveFeature(layer);
             });
-
 
             map.on('EDIT_ACTION.DELETE', (e) => {
                 const layers = e.layers._layers;
@@ -229,19 +227,20 @@
             },
 
             async saveFeature(layer) {
-
+                const info = layer.info;
                 const layerType = this.getLayerType(layer);
+
                 let sql;
                 if (layerType === 'circle') {
                     sql = `
-                        insert into feature(latlngs, radius, geom_type, geom)
-                        values ('${this.layerToLatlngs(layer)}', ${layer._mRadius}, '${layerType}', ${this.layerToGeomText(layer)})
+                        insert into feature(latlngs, radius, geom_type, geom, type, name)
+                        values ('${this.layerToLatlngs(layer)}', ${layer._mRadius}, '${layerType}', ${this.layerToGeomText(layer)}, '${info.type}', '${info.name}')
                         returning id;
                     `
                 } else {
                     sql = `
-                        insert into feature(latlngs, geom_type, geom)
-                        values ('${this.layerToLatlngs(layer)}', '${layerType}', ${this.layerToGeomText(layer)})
+                        insert into feature(latlngs, geom_type, geom, type, name)
+                        values ('${this.layerToLatlngs(layer)}', '${layerType}', ${this.layerToGeomText(layer)}, '${info.type}', '${info.name}')
                         returning id;
                     `
                 }
@@ -274,26 +273,31 @@
 
             async loadFeatures() {
                 const features = (await db.query(`
-                    select id, latlngs, radius, geom_type
+                    select id, latlngs, radius, geom_type, type, name
                     from feature;
                 `)).rows;
 
-
                 features.forEach(feature => {
-                    const {id, latlngs, radius, geom_type} = feature;
+                    const {id, latlngs, radius, geom_type, type, name} = feature;
                     let geom;
 
+                    // create layer
                     if (geom_type === 'circle') {
                         geom = L.circle(latlngs[0], {radius: radius}).addTo(this.drawnItems);
                     } else {
                         geom = L[geom_type](latlngs).addTo(this.drawnItems);
                     }
 
+                    // embed info
+                    geom.info = {type: type || 'no type', name: name || 'no name'};
+
+                    // add edit toolbar
                     geom.on('click', (e) => {
                         new L.Toolbar2.EditToolbar(e.latlng)
                             .addTo(this.map, geom);
                     });
 
+                    // record id
                     this.idLookup[geom._leaflet_id] = {id, geom_type};
                 });
 

@@ -37,7 +37,7 @@
     export default {
         name: 'draw-new-layer',
 
-        props: ['layer'],
+        props: ['geom_type'],
 
         data() {
             return {
@@ -50,16 +50,16 @@
 
         computed: {
             getTypes() {
-                const layer = this.layer;
+                const geom_type = this.geom_type;
                 let types;
 
-                if (layer instanceof L.Circle) {
+                if (geom_type === 'circle') {
                     types = ['building'];
-                } else if ((layer instanceof L.Polyline) && !(layer instanceof L.Polygon)) {
-                    types = ['main road', 'side road', 'stream'];
-                } else if ((layer instanceof L.Polygon) && !(layer instanceof L.Rectangle)) {
+                } else if (geom_type === 'polyline') {
+                    types = ['main road', 'side road'];
+                } else if (geom_type === 'polygon') {
                     types = ['building', 'river'];
-                } else if (layer instanceof L.Rectangle) {
+                } else if (geom_type === 'rectangle') {
                     types = ['building'];
                 } else {
                     console.log('error: getType');

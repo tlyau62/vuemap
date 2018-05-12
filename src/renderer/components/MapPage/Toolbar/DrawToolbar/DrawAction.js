@@ -2,6 +2,7 @@ import {Save, Undo, Redo, Discard} from './DrawSubAction'
 import Vue from 'vue'
 import L from 'leaflet'
 import 'leaflet-geometryutil/src/leaflet.geometryutil'
+import 'leaflet-snap/leaflet.snap'
 import 'leaflet-draw'
 import 'leaflet-tooltip/dist/L.Tooltip'
 import 'leaflet-tooltip/dist/tooltip.css'
@@ -26,6 +27,7 @@ const action = L.Toolbar2.Action.extend({
 
         // commit
         this._registerEvent(
+            map,
             'editable:drawing:commit',
             (e) => {
                 this.disable();
@@ -69,11 +71,13 @@ const action = L.Toolbar2.Action.extend({
             .setLatLng(new L.LatLng(bounds.getNorth(), bounds.getCenter().lng));
 
         this._registerEvent(
+            map,
             'mousemove',
             (e) => tooltip
                 .setContent(getTooltipText(this._shape, true, e.latlng))
                 .updatePosition(e.layerPoint)
         )._registerEvent(
+            map,
             'editable:drawing:clicked',
             (e) => tooltip.setContent(getTooltipText(this._shape, true, e.latlng))
         );
@@ -206,28 +210,25 @@ const action = L.Toolbar2.Action.extend({
 
     },
 
-    _registerEvent(name, handler) {
-        this._handlers.push({name, handler});
-        this._map.on(name, handler);
+    _registerEvent(layer, name, handler) {
+        this._handlers.push({layer, name, handler});
+        layer.on(name, handler);
         return this;
     },
 
     _destroyEvents() {
-        const map = this._map;
         this._handlers.forEach(event => {
-            map.off(event.name, event.handler);
+            event.layer.off(event.name, event.handler);
         });
     },
 
-    _createForm(shape) {
+    _createForm(geom_type, callback) {
         const modalWrapper = $('<div id="modal"></div>');
         modalWrapper.appendTo('body');
 
         const form = Vue.extend(DrawNewLayer);
         let formVm = new form({
-            propsData: {
-                layer: this._shape
-            }
+            propsData: {geom_type}
         });
         formVm.$mount('#modal');
         formVm.$on('FORM_SEND', (formData) => {
@@ -237,12 +238,10 @@ const action = L.Toolbar2.Action.extend({
             modalWrapper.remove();
 
             // embed form
-            if (formData === 'cancel') {
-                this.disable();
+            if (formData !== 'cancel') {
+                callback(formData.feature);
             } else {
-                this._shape = shape;
-                this._shape.info = formData.feature;
-                action.prototype.addHooks.call(this);
+                callback();
             }
         });
     }
@@ -259,9 +258,74 @@ L.Toolbar2.DrawAction.Polyline = action.extend({
         })
     },
 
+    initialize(map, options) {
+        this._snap = null;
+        this._snapMarker = null;
+        action.prototype.initialize.call(this, map, options);
+    },
+
     addHooks() {
-        this._shape = this._map.editTools.startPolyline();
-        action.prototype._createForm.call(this, this._shape);
+        const map = this._map;
+        const startDraw = (form) => {
+            if (!form) {
+                this.disable();
+                return;
+            }
+
+            // add snap
+            const roadStartMarker = map.roadStartMarker;
+            let snap, snapMarker;
+
+            if (this._snap) {
+                this._snap.enable();
+
+                snap = this._snap;
+                snapMarker = this._snapMarker;
+            } else {
+                snap = this._snap = new L.Handler.MarkerSnap(map);
+                snapMarker = this._snapMarker = L.marker(map.getCenter(), {
+                    icon: map.editTools.createVertexIcon({className: 'leaflet-div-icon leaflet-drawing-icon'}),
+                    opacity: 1,
+                    zIndexOffset: 1000
+                });
+
+                snap.addGuideLayer(roadStartMarker);
+                snap.watchMarker(snapMarker);
+            }
+
+            this._registerEvent(
+                snapMarker,
+                'snap',
+                (e) => snapMarker.addTo(map)
+            )._registerEvent(
+                snapMarker,
+                'unsnap',
+                (e) => snapMarker.remove()
+            )._registerEvent(
+                snapMarker,
+                'click',
+                (e) => {
+                    this._shape = this._map.editTools.startPolyline(e.latlng);
+                    this._shape.info = form;
+                    action.prototype.addHooks.call(this);
+                }
+            )._registerEvent(
+                map,
+                'mousemove',
+                (e) => snapMarker.setLatLng(e.latlng)
+            );
+
+        };
+
+        action.prototype._createForm.call(this, 'polyline', startDraw);
+    },
+
+    removeHooks() {
+        if (this._snap) {
+            this._snap.disable();
+        }
+
+        action.prototype.removeHooks.call(this);
     }
 });
 

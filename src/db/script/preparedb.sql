@@ -12,9 +12,9 @@ CREATE EXTENSION dblink;
 -- create tables
 CREATE TABLE feature (
     id bigserial NOT NULL,
-    layer varchar,
+    type varchar,
     priority integer,
-    text varchar,
+    name varchar,
     geom geometry(Geometry,4326),
     latlngs double precision[][2],
     radius double precision,

@@ -21,7 +21,6 @@
     import 'leaflet-toolbar'
     import 'leaflet-toolbar/dist/leaflet.toolbar.css'
     import 'leaflet-geometryutil/src/leaflet.geometryutil'
-    import 'leaflet-snap/leaflet.snap'
     import './MapPage/Toolbar/DrawToolbar/DrawToolbar'
     import './MapPage/Toolbar/EditToolbar/EditToolbar'
     import './MapPage/Toolbar/QueryToolbar/QueryToolbar'
@@ -67,7 +66,7 @@
             // fix marker
             fixMarkerIcon();
 
-            // add tile
+            // add tiles
             const baseTile = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             }).addTo(map);
@@ -79,10 +78,12 @@
 
             L.control.layers({drawnItems: this.drawnItems, previewTile}).addTo(map);
 
-            // render preview
             map.on('baselayerchange', (e) => {
                 previewTile.setUrl(`http://localhost:20008/tile/${mapName}/{z}/{x}/{y}.png?updated=${new Date().getTime()}`);
             });
+
+            // add road start marker
+            map.roadStartMarker = L.marker(location).addTo(map);
 
             // add query toolbars
             new L.Toolbar2.QueryToolbar({

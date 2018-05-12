@@ -152,9 +152,7 @@ export class LayerDetail {
                 const chart = new Chart(ctx, {
                     type: 'scatter',
                     data: {
-                        labels: ["January", "February", "March", "April", "May", "June", "July"],
                         datasets: [{
-                            // label: "My First dataset",
                             backgroundColor: 'rgb(255, 99, 132)',
                             borderColor: 'rgb(255, 99, 132)',
                             data: pts,

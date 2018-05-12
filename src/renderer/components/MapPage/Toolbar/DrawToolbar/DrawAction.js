@@ -224,7 +224,11 @@ const action = L.Toolbar2.Action.extend({
         modalWrapper.appendTo('body');
 
         const form = Vue.extend(DrawNewLayer);
-        let formVm = new form();
+        let formVm = new form({
+            propsData: {
+                layer: this._shape
+            }
+        });
         formVm.$mount('#modal');
         formVm.$on('FORM_SEND', (formData) => {
 
@@ -256,10 +260,8 @@ L.Toolbar2.DrawAction.Polyline = action.extend({
     },
 
     addHooks() {
-        action.prototype._createForm.call(
-            this,
-            this._map.editTools.startPolyline()
-        );
+        this._shape = this._map.editTools.startPolyline();
+        action.prototype._createForm.call(this, this._shape);
     }
 });
 
@@ -272,10 +274,8 @@ L.Toolbar2.DrawAction.Polygon = action.extend({
     },
 
     addHooks() {
-        action.prototype._createForm.call(
-            this,
-            this._map.editTools.startPolygon()
-        );
+        this._shape = this._map.editTools.startPolygon();
+        action.prototype._createForm.call(this, this._shape);
     }
 });
 
@@ -288,10 +288,8 @@ L.Toolbar2.DrawAction.Rectangle = action.extend({
     },
 
     addHooks() {
-        action.prototype._createForm.call(
-            this,
-            this._map.editTools.startRectangle()
-        );
+        this._shape = this._map.editTools.startRectangle();
+        action.prototype._createForm.call(this, this._shape);
     }
 });
 
@@ -303,9 +301,7 @@ L.Toolbar2.DrawAction.Circle = action.extend({
         })
     },
     addHooks() {
-        action.prototype._createForm.call(
-            this,
-            this._map.editTools.startCircle()
-        );
+        this._shape = this._map.editTools.startCircle();
+        action.prototype._createForm.call(this, this._shape);
     }
 });

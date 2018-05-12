@@ -11,12 +11,14 @@
                     </div>
                     <div class="modal-body">
                         <label>
-                            <span>type</span>
-                            <input type="text" v-model="feature.type"/>
-                        </label>
-                        <label>
                             <span>name</span>
                             <input type="text" v-model="feature.name"/>
+                        </label>
+                        <label>
+                            <span>type</span>
+                            <select v-model="feature.type">
+                                <option v-for="type in getTypes" :value="type">{{type}}</option>
+                            </select>
                         </label>
                     </div>
                     <div class="modal-footer">
@@ -35,6 +37,8 @@
     export default {
         name: 'draw-new-layer',
 
+        props: ['layer'],
+
         data() {
             return {
                 feature: {
@@ -42,6 +46,28 @@
                     name: null
                 }
             };
+        },
+
+        computed: {
+            getTypes() {
+                const layer = this.layer;
+                let types;
+
+                if (layer instanceof L.Circle) {
+                    types = ['building'];
+                } else if ((layer instanceof L.Polyline) && !(layer instanceof L.Polygon)) {
+                    types = ['main road', 'side road', 'stream'];
+                } else if ((layer instanceof L.Polygon) && !(layer instanceof L.Rectangle)) {
+                    types = ['building', 'river'];
+                } else if (layer instanceof L.Rectangle) {
+                    types = ['building'];
+                } else {
+                    console.log('error: getType');
+                    this.types = undefined;
+                }
+
+                return types;
+            }
         },
 
         mounted() {

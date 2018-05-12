@@ -1,4 +1,5 @@
 import {LayerDetail} from './EditUtil'
+import L from "leaflet";
 
 const action = L.Toolbar2.Action.extend({
     initialize(map, shape, options) {
@@ -18,16 +19,15 @@ const action = L.Toolbar2.Action.extend({
         this._map.removeLayer(this.toolbar);
     },
 
-    _registerEvent(name, handler) {
-        this._handlers.push({name, handler});
-        this._map.on(name, handler);
+    _registerEvent(layer, name, handler) {
+        this._handlers.push({layer, name, handler});
+        layer.on(name, handler);
         return this;
     },
 
     _destroyEvents() {
-        const map = this._map;
         this._handlers.forEach(event => {
-            map.off(event.name, event.handler);
+            event.layer.off(event.name, event.handler);
         });
     }
 });
@@ -45,7 +45,21 @@ L.Toolbar2.EditAction.Edit = action.extend({
     },
 
     addHooks() {
+        const roadStartLatLng = this._map.road.roadStartMarker.getLatLng();
+
+        this._shape.originalLatlng = this._shape.getLatLngs().slice().map((latlng) => L.latLng([latlng.lat, latlng.lng]));
         this._shape.enableEdit();
+        this._registerEvent(
+            this._shape,
+            'editable:vertex:dragstart',
+            (e) => {
+                if (L.GeometryUtil.distance(this._map, e.vertex.latlng, roadStartLatLng) === 0) {
+                    this._shape.editor.reset();
+                }
+            }
+        );
+
+
         this._createTooltip();
         this._map.removeLayer(this.toolbar);
     },
@@ -69,19 +83,23 @@ L.Toolbar2.EditAction.Edit = action.extend({
             .setLatLng(new L.LatLng(bounds.getNorth(), bounds.getCenter().lng));
 
         this._registerEvent(
+            map,
             'mousemove',
             (e) => tooltip.updatePosition(e.layerPoint)
         )._registerEvent(
+            map,
             'editable:vertex:drag',
             (e) => tooltip
                 .setContent(getTooltipText(this._shape, true, e.latlng))
         )._registerEvent(
+            map,
             'editable:vertex:dragend',
             (e) => {
                 tooltip
                     .setContent(getTooltipText(this._shape))
             }
         )._registerEvent(
+            map,
             'editable:disable',
             (e) => this.removeHooks()
         );
@@ -164,16 +182,25 @@ L.Toolbar2.EditAction.Delete = action.extend({
         const map = this._map;
         const shape = this._shape;
 
-        map.removeLayer(shape);
         map.fire('EDIT_ACTION.DELETE', {layers: L.layerGroup([shape])});
 
         action.prototype.addHooks.call(this);
     }
 });
 
-L.Toolbar2.EditAction.Cancel = action.extend({
+L.Toolbar2.EditAction.Discard = action.extend({
     options: {
-        toolbarIcon: {html: 'Cancel'}
+        toolbarIcon: {html: 'Discard'}
+    },
+
+    addHooks() {
+        const map = this._map;
+        const shape = this._shape;
+
+        shape.disableEdit();
+        shape.setLatLngs(this._shape.originalLatlng);
+
+        action.prototype.addHooks.call(this);
     }
 });
 
@@ -188,11 +215,10 @@ L.Toolbar2.EditAction.Detail = action.extend({
         const detail = new LayerDetail(shape);
         const popup = L.popup().setContent(detail.detailTemplateWithChart);
 
-        // markerdata.bindPopup(popup, { offset: L.Point(0,16) }).addTo(m);
-
         shape.bindPopup(popup, {className: 'detail-popup', maxWidth: 500}).openPopup();
 
         this._registerEvent(
+            map,
             'popupclose',
             (e) => {
                 this._destroyEvents();

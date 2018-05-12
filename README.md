@@ -26,6 +26,10 @@ draw
         - save
         - undo
     - *add name, layer, priority, color
+    - snapping
+    - solving conflicts
+        - edit road line breaking the road start marker
+        - remove road line breaking the road network
 - query
     - place
     - elevation

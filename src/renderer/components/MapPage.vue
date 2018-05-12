@@ -35,14 +35,9 @@
         data() {
             return {
                 map: null,
-                drawnItems: L.featureGroup(),
+                drawnItems: null,
                 idLookup: {}
             };
-        },
-
-        async created() {
-            await db.connect(this.$route.params.name);
-            this.loadFeatures();
         },
 
         watch: {
@@ -66,6 +61,9 @@
             // fix marker
             fixMarkerIcon();
 
+            // add drawn layer
+            this.drawnItems = L.featureGroup().addTo(map);
+
             // add tiles
             const baseTile = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -82,17 +80,12 @@
                 previewTile.setUrl(`http://localhost:20008/tile/${mapName}/{z}/{x}/{y}.png?updated=${new Date().getTime()}`);
             });
 
-            // add road start marker
-            map.roadStartMarker = L.marker(location).addTo(map);
-
             // add query toolbars
             new L.Toolbar2.QueryToolbar({
                 position: 'topleft'
             }).addTo(map);
 
             // add draw, edit toolbars
-            const drawnItems = this.drawnItems.addTo(map);
-
             new L.Toolbar2.DrawToolbar({
                 position: 'topleft'
             }).addTo(map);
@@ -107,7 +100,7 @@
                 });
 
                 // draw layer
-                drawnItems.addLayer(layer);
+                this.drawnItems.addLayer(layer);
 
                 // save to db
                 self.saveFeature(layer);
@@ -119,6 +112,9 @@
 
                 for (let key in layers) {
                     if (!layers.hasOwnProperty(key)) continue;
+
+                    this.drawnItems.removeLayer(layers[key]);
+
                     db.query(`
                         delete from feature
                         where id = ${idLookup[key].id};
@@ -135,6 +131,12 @@
                     self.editFeature(idLookup[key].id, layers[key]);
                 }
             });
+
+            // load feature
+            map.road = {};
+            map.road.roadStartMarker = L.marker(location).addTo(map);
+            map.road.drawnItems = this.drawnItems;
+            this.loadFeatures();
 
             function fixMarkerIcon() {
                 delete L.Icon.Default.prototype._getIconUrl;
@@ -278,6 +280,8 @@
             },
 
             async loadFeatures() {
+                await db.connect(this.$route.params.name);
+
                 const features = (await db.query(`
                     select id, latlngs, radius, geom_type, type, name
                     from feature;

@@ -273,25 +273,26 @@ L.Toolbar2.DrawAction.Polyline = action.extend({
             }
 
             // add snap
-            const roadStartMarker = map.roadStartMarker;
             let snap, snapMarker;
 
-            if (this._snap) {
-                this._snap.enable();
+            const roadGuideLayers =
+                map.road.drawnItems.getLayers().length === 0 ?
+                    map.road.roadStartMarker :
+                    map.road.drawnItems;
 
-                snap = this._snap;
+            if (this._snapMarker) {
                 snapMarker = this._snapMarker;
             } else {
-                snap = this._snap = new L.Handler.MarkerSnap(map);
                 snapMarker = this._snapMarker = L.marker(map.getCenter(), {
                     icon: map.editTools.createVertexIcon({className: 'leaflet-div-icon leaflet-drawing-icon'}),
                     opacity: 1,
                     zIndexOffset: 1000
                 });
-
-                snap.addGuideLayer(roadStartMarker);
-                snap.watchMarker(snapMarker);
             }
+
+            snap = this._snap = new L.Handler.MarkerSnap(map);
+            snap.addGuideLayer(roadGuideLayers);
+            snap.watchMarker(snapMarker);
 
             this._registerEvent(
                 snapMarker,
@@ -305,6 +306,9 @@ L.Toolbar2.DrawAction.Polyline = action.extend({
                 snapMarker,
                 'click',
                 (e) => {
+                    if (this._shape && this._shape.editEnabled()) {
+                        return;
+                    }
                     this._shape = this._map.editTools.startPolyline(e.latlng);
                     this._shape.info = form;
                     action.prototype.addHooks.call(this);
@@ -323,6 +327,7 @@ L.Toolbar2.DrawAction.Polyline = action.extend({
     removeHooks() {
         if (this._snap) {
             this._snap.disable();
+            this._snap = null;
         }
 
         action.prototype.removeHooks.call(this);
@@ -336,10 +341,14 @@ L.Toolbar2.DrawAction.Polygon = action.extend({
             actions: [Save, Undo, Redo, Discard]
         })
     },
-
     addHooks() {
-        this._shape = this._map.editTools.startPolygon();
-        action.prototype._createForm.call(this, this._shape);
+        const startDraw = (form) => {
+            this._shape = this._map.editTools.startPolygon();
+            this._shape.info = form;
+            action.prototype.addHooks.call(this);
+        };
+
+        action.prototype._createForm.call(this, 'polygon', startDraw);
     }
 });
 
@@ -350,10 +359,14 @@ L.Toolbar2.DrawAction.Rectangle = action.extend({
             actions: [Discard]
         })
     },
-
     addHooks() {
-        this._shape = this._map.editTools.startRectangle();
-        action.prototype._createForm.call(this, this._shape);
+        const startDraw = (form) => {
+            this._shape = this._map.editTools.startRectangle();
+            this._shape.info = form;
+            action.prototype.addHooks.call(this);
+        };
+
+        action.prototype._createForm.call(this, 'rectangle', startDraw);
     }
 });
 
@@ -365,7 +378,12 @@ L.Toolbar2.DrawAction.Circle = action.extend({
         })
     },
     addHooks() {
-        this._shape = this._map.editTools.startCircle();
-        action.prototype._createForm.call(this, this._shape);
+        const startDraw = (form) => {
+            this._shape = this._map.editTools.startCircle();
+            this._shape.info = form;
+            action.prototype.addHooks.call(this);
+        };
+
+        action.prototype._createForm.call(this, 'circle', startDraw);
     }
 });

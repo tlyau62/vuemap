@@ -13,6 +13,11 @@ const Save = subAction.extend({
         toolbarIcon: {
             html: 'Save'
         }
+    },
+    addHooks() {
+        const action = this._action;
+        action.disable();
+        this._map.fire('DRAW_ACTION.COMMIT', {layer: action._shape});
     }
 });
 
@@ -54,7 +59,9 @@ const Discard = subAction.extend({
         }
     },
     addHooks() {
-        this._map.removeLayer(this._action._shape);
+        if (this._action._shape) {
+            this._map.removeLayer(this._action._shape);
+        }
         this._action.disable();
     }
 });

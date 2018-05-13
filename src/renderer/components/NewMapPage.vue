@@ -1,28 +1,37 @@
 <template>
     <div id="wrapper">
-        <a @click="goBack">Go back</a>
+        <header style="height: 14vh">
+            <button @click="goBack" class="btn btn-link">Back</button>
+            <form class="form-inline" @submit.prevent="submit" style="padding-left: 1rem">
+                <div class="form-group">
+                    <label for="map-name">Map name</label>
+                    <input type="text" id="map-name" class="form-control mx-sm-3"
+                           placeholder="mymap" v-model="mapName" style="width: 150px">
+                </div>
 
-        <form @submit.prevent="submit">
-            <label>
-                map name
-                <input type="text" v-model="mapName"/>
-            </label>
+                <div class="form-group">
+                    <label for="location">Road starting location</label>
+                    <input type="text" id="location" class="form-control mx-sm-3"
+                           :value="!selectedLocation ? 'empty' : selectedLocation.toString()" style="width: 250px">
+                </div>
 
-            <p>select a starting location: {{!selectedLocation ? 'empty' : selectedLocation.toString()}}</p>
-            <div id="map"></div>
-
-
-            <input type="submit" value="create"/>
-        </form>
+                <button type="submit" class="btn btn-primary">Create</button>
+            </form>
+        </header>
+        <div id="map" style="height: 86vh;"></div>
     </div>
 </template>
 
 <script>
+    import Vue from 'vue'
     import L from 'leaflet'
     import 'leaflet/dist/leaflet.css'
     import db from 'db/db'
     import fs from 'fs'
     import {execSync} from 'child_process'
+    import 'leaflet-control-geocoder/dist/Control.Geocoder'
+    import 'leaflet-control-geocoder/dist/Control.Geocoder.css'
+    import Loading from './Common/Loading'
 
     export default {
         name: 'new-map-page',
@@ -43,6 +52,18 @@
                 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             }).addTo(map);
 
+            L.Control
+                .geocoder({
+                    defaultMarkGeocode: false,
+                    showResultIcons: true
+                })
+                .on('markgeocode', function (e) {
+                    const bbox = e.geocode.bbox;
+                    map.flyTo(bbox.getCenter());
+                })
+                .addTo(map);
+
+
             fixMarkerIcon();
             addLocationPopup(map);
             db.connect();
@@ -61,9 +82,9 @@
                 let currentLocation;
 
                 // create dom
-                const container = L.DomUtil.create('div', '', map.getContainer());
+                const container = L.DomUtil.create('div', 'text-center', map.getContainer());
                 const displayLocation = L.DomUtil.create('p', '', container);
-                const btn = L.DomUtil.create('button', '', container);
+                const btn = L.DomUtil.create('button', 'btn btn-outline-primary btn-sm', container);
                 const popup = L.popup();
 
                 btn.setAttribute('type', 'button');
@@ -110,7 +131,9 @@
                     return;
                 }
 
-                console.log(mapName + ' ' + selectedLocation);
+                // loading ui
+                const loading = Vue.extend(Loading);
+                const loadingInstance = new loading().$mount();
 
                 // check db exists
                 const isExists = (await db.query(`
@@ -135,6 +158,9 @@
 
                 // import tilemill
                 this.importTilemill(mapName);
+
+                // remove loading
+                loadingInstance.$destroy();
 
                 // move to map page
                 this.$router.push({
@@ -161,8 +187,5 @@
     }
 </script>
 
-<style>
-    #map {
-        height: 500px;
-    }
+<style scoped>
 </style>

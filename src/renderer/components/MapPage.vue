@@ -24,7 +24,7 @@
 
     export default {
         name: 'map-page',
-        
+
         data() {
             return {
                 map: null,
@@ -167,11 +167,20 @@
                     pathToolbar.hide();
                     this.drawnItems.addTo(this.map);
                     this.map.road.roadStartMarker.addTo(this.map);
+
+                    for (let layer in this.map.path) {
+                        if (!this.map.path.hasOwnProperty(layer) || !this.map.path[layer]) continue;
+                        this.map.path[layer].remove();
+                    }
                 } else {
                     drawToolbar.hide();
                     pathToolbar.show();
                     this.drawnItems.remove();
                     this.map.road.roadStartMarker.remove();
+                    for (let layer in this.map.path) {
+                        if (!this.map.path.hasOwnProperty(layer) || !this.map.path[layer]) continue;
+                        this.map.path[layer].addTo(this.map);
+                    }
                 }
             },
 

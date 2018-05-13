@@ -12,7 +12,8 @@ const action = L.Toolbar2.Action.extend({
         this._mouseMarker = null;
         map.path = {
             startMarker: null,
-            endMarker: null
+            endMarker: null,
+            pathLayer: null
         };
         L.Toolbar2.Action.prototype.initialize.call(this, map, shape, options);
     },
@@ -81,9 +82,7 @@ const action = L.Toolbar2.Action.extend({
                 key: 'AIzaSyAcqUBLHpKUJGpweX8uDtDLOkTKmLDXFew'
             }
         });
-
-        console.log(response);
-
+        
         if (response.data.snappedPoints) {
             const locations = response.data.snappedPoints;
             const latlng = L.latLng([locations[0].location.latitude, locations[0].location.longitude]);
@@ -146,31 +145,44 @@ const action = L.Toolbar2.Action.extend({
         return db.query(eval('`' + require('db/script/insert_end_pt.sql') + '`'));
     },
 
-    _calPath(mode, startLatlng, endLatlng, midLatlng) {
+    async _calPath(mode, startLatlng, endLatlng, midLatlng) {
+        const map = this._map;
+        let pathgeom;
         if (mode === 'google') {
-            this._calPathExt(startLatlng, endLatlng);
+            pathgeom = await this._calPathExt(startLatlng, endLatlng);
         } else if (mode === 'mix1') {
-            this._calPathExt(startLatlng, midLatlng);
-            this._calPathPG(midLatlng, endLatlng);
+            pathgeom = await this._calPathExt(startLatlng, midLatlng);
+            pathgeom = pathgeom.concat(await this._calPathPG(midLatlng, endLatlng));
         } else if (mode === 'mix2') {
-            this._calPathPG(startLatlng, midLatlng);
-            this._calPathExt(midLatlng, endLatlng);
+            pathgeom = await this._calPathPG(startLatlng, midLatlng);
+            pathgeom = pathgeom.concat(await this._calPathExt(midLatlng, endLatlng));
         } else if (mode === 'pg') {
-            this._calPathPG(startLatlng, endLatlng);
+            pathgeom = await this._calPathPG(startLatlng, endLatlng);
         } else {
             console.log('error: _calPath');
         }
+
+        if (map.path.pathLayer) {
+            map.path.pathLayer.remove();
+        }
+        map.path.pathLayer = L.featureGroup().addTo(this._map);
+
+        pathgeom.forEach((geom) => geom.addTo(map.path.pathLayer));
     },
 
     async _calPathPG(startLatlng, endLatlng) {
+        const pathgeom = [];
+
         await db.query('BEGIN;');
         await this._insertEndPoint(startLatlng);
         await this._insertEndPoint(endLatlng);
         const results = (await db.query(eval('`' + require('db/script/dij.sql') + '`'))).rows;
         results.forEach((path) => {
-            L.geoJSON(JSON.parse(path.geojson)).addTo(this._map);
+            pathgeom.push(L.geoJSON(JSON.parse(path.geojson)));
         });
         await db.query(`ROLLBACK;`);
+
+        return pathgeom;
     },
 
     async _calPathExt(startLatlng, endLatlng) {
@@ -184,7 +196,8 @@ const action = L.Toolbar2.Action.extend({
         });
         let geom = response.data.routes[0].geometry.coordinates;
         geom = geom.map(latlng => [latlng[1], latlng[0]]);
-        L.polyline(geom).addTo(this._map);
+
+        return [L.polyline(geom)];
     },
 
     _registerEvent(layer, name, handler) {

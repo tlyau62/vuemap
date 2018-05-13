@@ -20,6 +20,7 @@
     import './MapPage/Toolbar/EditToolbar/EditToolbar'
     import './MapPage/Toolbar/QueryToolbar/QueryToolbar'
     import './MapPage/Toolbar/PathToolbar/PathToolbar'
+    import './MapPage/Toolbar/PathToolbar/PathInfoControl'
     import db from 'db/db'
 
     export default {
@@ -90,6 +91,12 @@
                 position: 'topleft'
             }).addTo(map);
             $('.path-toolbar').parent().hide();
+
+            // add path control
+            L.control.pathInfo({
+                position: 'topright'
+            }).addTo(map);
+            $("#infoWrapper").hide();
 
             map.on('DRAW_ACTION.COMMIT', (e) => {
                 const layer = e.layer;
@@ -167,11 +174,12 @@
                     pathToolbar.hide();
                     this.drawnItems.addTo(this.map);
                     this.map.road.roadStartMarker.addTo(this.map);
-
                     for (let layer in this.map.path) {
                         if (!this.map.path.hasOwnProperty(layer) || !this.map.path[layer]) continue;
                         this.map.path[layer].remove();
                     }
+
+                    $("#infoWrapper").hide();
                 } else {
                     drawToolbar.hide();
                     pathToolbar.show();
@@ -181,6 +189,7 @@
                         if (!this.map.path.hasOwnProperty(layer) || !this.map.path[layer]) continue;
                         this.map.path[layer].addTo(this.map);
                     }
+                    $("#infoWrapper").show();
                 }
             },
 

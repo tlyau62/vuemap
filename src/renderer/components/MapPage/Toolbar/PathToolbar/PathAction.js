@@ -39,6 +39,7 @@ const action = L.Toolbar2.Action.extend({
             realStart = (dists[0].dist !== null && (dists[0].dist < dists[2].dist)) ? dists[0] : dists[2];
             realEnd = (dists[1].dist !== null && (dists[1].dist < dists[3].dist)) ? dists[1] : dists[3];
 
+            // check using which route service
             if (realStart === dists[0] && realEnd === dists[1]) {
                 this._calPath('google', realStart.latlng, realEnd.latlng);
             } else if (realStart === dists[0] && realEnd === dists[3]) {
@@ -82,7 +83,7 @@ const action = L.Toolbar2.Action.extend({
                 key: 'AIzaSyAcqUBLHpKUJGpweX8uDtDLOkTKmLDXFew'
             }
         });
-        
+
         if (response.data.snappedPoints) {
             const locations = response.data.snappedPoints;
             const latlng = L.latLng([locations[0].location.latitude, locations[0].location.longitude]);
@@ -147,27 +148,44 @@ const action = L.Toolbar2.Action.extend({
 
     async _calPath(mode, startLatlng, endLatlng, midLatlng) {
         const map = this._map;
-        let pathgeom;
+        let result, pathgeom, dist;
         if (mode === 'google') {
-            pathgeom = await this._calPathExt(startLatlng, endLatlng);
+            result = await this._calPathExt(startLatlng, endLatlng);
+            dist = result.dist;
+            pathgeom = result.pathgeom;
         } else if (mode === 'mix1') {
-            pathgeom = await this._calPathExt(startLatlng, midLatlng);
-            pathgeom = pathgeom.concat(await this._calPathPG(midLatlng, endLatlng));
+            result = await this._calPathExt(startLatlng, midLatlng);
+            dist = result.dist;
+            pathgeom = result.pathgeom;
+
+            result = await this._calPathPG(midLatlng, endLatlng);
+            dist += result.dist;
+            pathgeom = pathgeom.concat(result.pathgeom);
         } else if (mode === 'mix2') {
-            pathgeom = await this._calPathPG(startLatlng, midLatlng);
-            pathgeom = pathgeom.concat(await this._calPathExt(midLatlng, endLatlng));
+            result = await this._calPathPG(startLatlng, midLatlng);
+            dist = result.dist;
+            pathgeom = result.pathgeom;
+
+            result = await this._calPathExt(midLatlng, endLatlng);
+            dist += result.dist;
+            pathgeom = pathgeom.concat(result.pathgeom);
         } else if (mode === 'pg') {
-            pathgeom = await this._calPathPG(startLatlng, endLatlng);
+            result = await this._calPathPG(startLatlng, endLatlng);
+            dist = result.dist;
+            pathgeom = result.pathgeom;
         } else {
             console.log('error: _calPath');
         }
 
+        // draw path layer
         if (map.path.pathLayer) {
             map.path.pathLayer.remove();
         }
         map.path.pathLayer = L.featureGroup().addTo(this._map);
-
         pathgeom.forEach((geom) => geom.addTo(map.path.pathLayer));
+
+        // fire path info
+        map.fire('PATH_INFO.GENERATED', {info: {pathgeom, dist}});
     },
 
     async _calPathPG(startLatlng, endLatlng) {
@@ -178,11 +196,14 @@ const action = L.Toolbar2.Action.extend({
         await this._insertEndPoint(endLatlng);
         const results = (await db.query(eval('`' + require('db/script/dij.sql') + '`'))).rows;
         results.forEach((path) => {
-            pathgeom.push(L.geoJSON(JSON.parse(path.geojson)));
+            pathgeom.push(L.geoJson(JSON.parse(path.geojson)));
         });
         await db.query(`ROLLBACK;`);
 
-        return pathgeom;
+        return {
+            dist: results[results.length - 1].agg_cost + results[results.length - 1].cost,
+            pathgeom
+        };
     },
 
     async _calPathExt(startLatlng, endLatlng) {
@@ -197,7 +218,10 @@ const action = L.Toolbar2.Action.extend({
         let geom = response.data.routes[0].geometry.coordinates;
         geom = geom.map(latlng => [latlng[1], latlng[0]]);
 
-        return [L.polyline(geom)];
+        return {
+            dist: response.data.routes[0].distance,
+            pathgeom: [L.polyline(geom)]
+        };
     },
 
     _registerEvent(layer, name, handler) {

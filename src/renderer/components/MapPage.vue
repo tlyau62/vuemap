@@ -8,7 +8,7 @@
         <div class="container-fluid">
             <div class="row">
                 <div id="map" class="col-10"></div>
-                <map-layers class="col"></map-layers>
+                <map-path class="col"></map-path>
             </div>
         </div>
     </div>
@@ -24,13 +24,14 @@
     import './MapPage/Toolbar/DrawToolbar/DrawToolbar'
     import './MapPage/Toolbar/EditToolbar/EditToolbar'
     import './MapPage/Toolbar/QueryToolbar/QueryToolbar'
-    import MapLayers from './MapPage/MapLayers'
+    import './MapPage/Toolbar/PathToolbar/PathToolbar'
+    import MapPath from './MapPage/MapPath'
     import db from 'db/db'
 
     export default {
         name: 'map-page',
 
-        components: {MapLayers},
+        components: {MapPath},
 
         data() {
             return {
@@ -87,6 +88,11 @@
 
             // add draw, edit toolbars
             new L.Toolbar2.DrawToolbar({
+                position: 'topleft'
+            }).addTo(map);
+
+            // add path toolbars
+            new L.Toolbar2.PathToolbar({
                 position: 'topleft'
             }).addTo(map);
 
@@ -333,5 +339,31 @@
     .detail-popup {
         width: auto;
         max-width: none;
+    }
+
+    .start-marker {
+        background-color: lightskyblue;
+        width: 3rem;
+        height: 3rem;
+        display: block;
+        left: -1.5rem;
+        top: -1.5rem;
+        position: relative;
+        border-radius: 3rem 3rem 0;
+        transform: rotate(45deg);
+        border: 1px solid #FFFFFF
+    }
+
+    .end-marker {
+        background-color: greenyellow;
+        width: 3rem;
+        height: 3rem;
+        display: block;
+        left: -1.5rem;
+        top: -1.5rem;
+        position: relative;
+        border-radius: 3rem 3rem 0;
+        transform: rotate(45deg);
+        border: 1px solid #FFFFFF
     }
 </style>

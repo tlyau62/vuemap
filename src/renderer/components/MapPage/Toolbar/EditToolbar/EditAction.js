@@ -194,11 +194,13 @@ L.Toolbar2.EditAction.Discard = action.extend({
     },
 
     addHooks() {
-        const map = this._map;
+        // const map = this._map;
         const shape = this._shape;
 
-        shape.disableEdit();
-        shape.setLatLngs(this._shape.originalLatlng);
+        if (shape.editor && shape.editor.editEnabled()) {
+            shape.disableEdit();
+            shape.setLatLngs(this._shape.originalLatlng);
+        }
 
         action.prototype.addHooks.call(this);
     }

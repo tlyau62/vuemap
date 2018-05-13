@@ -1,5 +1,6 @@
 import {app, BrowserWindow} from 'electron'
 import db from 'db/db'
+import '../common/getPath'
 
 // init db
 db.connect();

@@ -6,9 +6,10 @@ import './PathAction'
 L.Toolbar2.PathToolbar = L.Toolbar2.Control.extend({
     options: {
         actions: [
+            L.Toolbar2.PathAction.GenRoad,
             L.Toolbar2.PathAction.StartPoint,
             L.Toolbar2.PathAction.EndPoint
         ],
-        className: 'mb-0'
+        className: 'path-toolbar'
     }
 });

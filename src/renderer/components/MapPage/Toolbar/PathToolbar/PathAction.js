@@ -18,7 +18,9 @@ const action = L.Toolbar2.Action.extend({
     },
 
     removeHooks() {
-        this._map.removeLayer(this._mouseMarker);
+        if (this._mouseMarker) {
+            this._map.removeLayer(this._mouseMarker);
+        }
         this._destroyEvents();
     },
 
@@ -310,4 +312,19 @@ L.Toolbar2.PathAction.EndPoint = action.extend({
 
 });
 
+
+L.Toolbar2.PathAction.GenRoad = action.extend({
+
+    options: {
+        toolbarIcon: {
+            html: 'G'
+        }
+    },
+
+    addHooks() {
+        db.query(require('db/script/analyze_road_network'));
+        alert('finish');
+    }
+
+});
 

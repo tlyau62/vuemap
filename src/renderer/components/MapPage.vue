@@ -5,12 +5,7 @@
             <p>map name:{{$route.params.name}}, location: {{location}}</p>
         </header>
 
-        <div class="container-fluid">
-            <div class="row">
-                <div id="map" class="col-10"></div>
-                <map-path class="col"></map-path>
-            </div>
-        </div>
+        <div id="map"></div>
     </div>
 </template>
 
@@ -25,19 +20,17 @@
     import './MapPage/Toolbar/EditToolbar/EditToolbar'
     import './MapPage/Toolbar/QueryToolbar/QueryToolbar'
     import './MapPage/Toolbar/PathToolbar/PathToolbar'
-    import MapPath from './MapPage/MapPath'
     import db from 'db/db'
 
     export default {
         name: 'map-page',
-
-        components: {MapPath},
-
+        
         data() {
             return {
                 map: null,
                 drawnItems: null,
-                idLookup: {}
+                idLookup: {},
+                isDraw: true
             };
         },
 
@@ -79,6 +72,7 @@
 
             map.on('baselayerchange', (e) => {
                 previewTile.setUrl(`http://localhost:20008/tile/${mapName}/{z}/{x}/{y}.png?updated=${new Date().getTime()}`);
+                this.toggleMode();
             });
 
             // add query toolbars
@@ -95,6 +89,7 @@
             new L.Toolbar2.PathToolbar({
                 position: 'topleft'
             }).addTo(map);
+            $('.path-toolbar').parent().hide();
 
             map.on('DRAW_ACTION.COMMIT', (e) => {
                 const layer = e.layer;
@@ -160,6 +155,24 @@
                 window.history.length > 1
                     ? this.$router.go(-1)
                     : this.$router.push('/');
+            },
+
+            toggleMode() {
+                this.isDraw = !this.isDraw;
+                const drawToolbar = $('.draw-toolbar').parent();
+                const pathToolbar = $('.path-toolbar').parent();
+
+                if (this.isDraw) {
+                    drawToolbar.show();
+                    pathToolbar.hide();
+                    this.drawnItems.addTo(this.map);
+                    this.map.road.roadStartMarker.addTo(this.map);
+                } else {
+                    drawToolbar.hide();
+                    pathToolbar.show();
+                    this.drawnItems.remove();
+                    this.map.road.roadStartMarker.remove();
+                }
             },
 
             layerToGeomText(layer) {
@@ -341,29 +354,13 @@
         max-width: none;
     }
 
-    .start-marker {
-        background-color: lightskyblue;
-        width: 3rem;
-        height: 3rem;
-        display: block;
-        left: -1.5rem;
-        top: -1.5rem;
-        position: relative;
-        border-radius: 3rem 3rem 0;
-        transform: rotate(45deg);
-        border: 1px solid #FFFFFF
+    .draw-toolbar {
+        /*display: block;*/
+        margin-bottom: 0;
     }
 
-    .end-marker {
-        background-color: greenyellow;
-        width: 3rem;
-        height: 3rem;
-        display: block;
-        left: -1.5rem;
-        top: -1.5rem;
-        position: relative;
-        border-radius: 3rem 3rem 0;
-        transform: rotate(45deg);
-        border: 1px solid #FFFFFF
+    .path-toolbar {
+        /*display: none;*/
+        margin-bottom: 0;
     }
 </style>

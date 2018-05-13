@@ -12,6 +12,6 @@ L.Toolbar2.DrawToolbar = L.Toolbar2.Control.extend({
             L.Toolbar2.DrawAction.Rectangle,
             L.Toolbar2.DrawAction.Circle
         ],
-        className: 'mb-0'
+        className: 'draw-toolbar'
     }
 });

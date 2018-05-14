@@ -116,8 +116,12 @@
             }).addTo(map);
             $("#infoWrapper").hide();
 
-            map.on('DRAW_ACTION.COMMIT', (e) => {
+            map.on('DRAW_ACTION.COMMIT', async (e) => {
                 const layer = e.layer;
+
+                const isConflict = await this.checkConflicts(null, layer, 'commit'); // conflict
+
+                if (isConflict) return;
 
                 // add edit action
                 layer.on('click', (e) => {
@@ -133,12 +137,16 @@
                 self.saveFeature(layer);
             });
 
-            map.on('EDIT_ACTION.DELETE', (e) => {
+            map.on('EDIT_ACTION.DELETE', async (e) => {
                 const layers = e.layers._layers;
                 const idLookup = self.idLookup;
 
                 for (let key in layers) {
                     if (!layers.hasOwnProperty(key)) continue;
+
+                    const isConflict = await this.checkConflicts(idLookup[key].id, layers[key], 'delete'); // conflict
+
+                    if (isConflict) continue;
 
                     // remove layer
                     this.drawnItems.removeLayer(layers[key]);
@@ -324,6 +332,63 @@
 
                 const rows = (await db.query(sql)).rows;
                 this.idLookup[layer._leaflet_id] = {id: rows[0].id, geom_type: layerType};
+            },
+
+            async checkConflicts(id, layer, mode) {
+                const roadStartMarker = this.map.road.roadStartMarker;
+                const type = layer.info.type;
+                const geomText = this.layerToGeomText(layer);
+                let isConflict = false;
+                let rows;
+
+                if (mode === 'commit') {
+                    // intersecting
+                    rows = (await db.query(`
+                        select exists (
+                            select 1
+                            from feature
+                            where st_intersects(feature.geom, ${geomText}) -- conflicts
+                            and not (feature.type in ('main road', 'side road') and '${type}' in ('main road', 'side road')) -- but not both are road
+                        );
+                    `)).rows;
+
+                    if (rows[0].exists === true) {
+                        isConflict = true;
+                        alert('intersecting');
+                    }
+                } else if (mode === 'delete') {
+                    // >1 connected components
+                    rows = (await db.query(`
+                    with groups as (
+                        select
+                            row_number() over (order by unnest(ST_ClusterWithin(geom, 5e-5))) as id,
+                            (st_dump(unnest(ST_ClusterWithin(geom, 5e-5)))).geom as geom
+                        from feature
+                        where type in ('main road', 'side road') and id != ${id}
+                    )
+                    select id from groups group by id;`
+                    )).rows;
+
+                    if (rows.length > 1) {
+                        isConflict = true;
+                        alert('disconnected road');
+                    }
+
+                    // delete road from start point
+                    rows = (await db.query(`
+                        select st_intersects((select geom from feature where id = ${id}), ${this.layerToGeomText(roadStartMarker)})`
+                    )).rows;
+                    
+                    if (rows[0]['st_intersects'] === true) {
+                        isConflict = true;
+                        alert('disconnected road');
+                    }
+                } else {
+                    console.log('error: checkConflicts');
+                    return undefined;
+                }
+
+                return isConflict;
             },
 
             editFeature(id, layer) {

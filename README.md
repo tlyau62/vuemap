@@ -26,13 +26,14 @@ draw
     - state
         - save
         - undo
-    - snapping
+    - *snapping
+      - edit  
     - *solving conflicts
         - edit road line breaking the road start marker
         - *remove road line breaking the road network
         - *intersections
-    - *draw panel
-       - *show color, name
+    - draw panel
+       - show color, name
 - query
     - place
     - elevation

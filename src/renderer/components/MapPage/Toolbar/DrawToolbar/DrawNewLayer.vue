@@ -12,7 +12,7 @@
                     <div class="modal-body">
                         <label>
                             <span>name</span>
-                            <input type="text" v-model="feature.name"/>
+                            <input type="text" required v-model="feature.name"/>
                         </label>
                         <label>
                             <span>type</span>

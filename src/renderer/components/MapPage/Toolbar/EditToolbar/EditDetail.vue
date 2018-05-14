@@ -4,7 +4,7 @@
             <div class="form-group row">
                 <label for="name" class="col-sm-2 col-form-label">Name</label>
                 <div class="col-sm-10">
-                    <input type="text" class="form-control-plaintext" id="name" v-model="layer.info.name">
+                    <input type="text" required class="form-control-plaintext" id="name" v-model="layer.info.name">
                 </div>
             </div>
             <div class="form-group row">

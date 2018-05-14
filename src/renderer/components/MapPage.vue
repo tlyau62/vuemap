@@ -20,6 +20,9 @@
     import './MapPage/Toolbar/PathToolbar/PathToolbar'
     import './MapPage/Toolbar/PathToolbar/PathInfoControl'
     import './MapPage/Control/MapInfo.js'
+    import './MapPage/Control/DrawPanel.js'
+    import RoadStartIcon from '../assets/marker-icon-2x-yellow.png';
+    import ShadowIcon from '../assets/marker-shadow.png';
     import randomColor from 'randomColor'
     import db from 'db/db'
 
@@ -62,9 +65,15 @@
 
             // add drawn layer
             this.drawnItems = L.featureGroup().addTo(map);
+            this.map.drawnItems = this.drawnItems;
 
-            // add map control
+            // add map info control
             L.control.mapInfo({
+                position: 'topright'
+            }).addTo(map);
+
+            // add draw panel control
+            L.control.drawPanel({
                 position: 'topright'
             }).addTo(map);
 
@@ -118,6 +127,7 @@
 
                 // draw layer
                 this.drawnItems.addLayer(layer);
+                this.map.fire('DRAW_PANEL.UPDATE');
 
                 // save to db
                 self.saveFeature(layer);
@@ -130,8 +140,11 @@
                 for (let key in layers) {
                     if (!layers.hasOwnProperty(key)) continue;
 
+                    // remove layer
                     this.drawnItems.removeLayer(layers[key]);
+                    this.map.fire('DRAW_PANEL.UPDATE');
 
+                    // update db
                     db.query(`
                         delete from feature
                         where id = ${idLookup[key].id};
@@ -151,7 +164,16 @@
 
             // load feature
             map.road = {};
-            map.road.roadStartMarker = L.marker(location).addTo(map);
+            map.road.roadStartMarker = L.marker(location, {
+                icon: L.icon({
+                    iconUrl: RoadStartIcon,
+                    shadowUrl: ShadowIcon,
+                    iconSize: [25, 41],
+                    iconAnchor: [12, 41],
+                    popupAnchor: [1, -34],
+                    shadowSize: [41, 41]
+                })
+            }).addTo(map);
             map.road.drawnItems = this.drawnItems;
             this.loadFeatures();
 
@@ -368,7 +390,7 @@
                     this.idLookup[geom._leaflet_id] = {id, geom_type};
                 });
 
-                console.log(this.drawnItems);
+                this.map.fire('DRAW_PANEL.UPDATE');
             }
         }
     }

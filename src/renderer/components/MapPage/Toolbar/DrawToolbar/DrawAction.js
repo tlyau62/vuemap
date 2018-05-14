@@ -252,7 +252,7 @@ L.Toolbar2.DrawAction = {};
 
 L.Toolbar2.DrawAction.Polyline = action.extend({
     options: {
-        toolbarIcon: {html: 'L'},
+        toolbarIcon: {html: '<div style="color: black">↝</div>'},
         subToolbar: new L.Toolbar2({
             actions: [Save, Undo, Redo, Discard]
         })
@@ -269,6 +269,14 @@ L.Toolbar2.DrawAction.Polyline = action.extend({
         const startDraw = (form) => {
             if (!form) {
                 this.disable();
+                return;
+            }
+
+            if (form.type === 'stream') {
+                this._shape = this._map.editTools.startPolyline();
+                this._shape.info = form;
+                action.prototype.addHooks.call(this);
+
                 return;
             }
 
@@ -336,13 +344,18 @@ L.Toolbar2.DrawAction.Polyline = action.extend({
 
 L.Toolbar2.DrawAction.Polygon = action.extend({
     options: {
-        toolbarIcon: {html: 'P'},
+        toolbarIcon: {html: '<div style="color: black">★</div>'},
         subToolbar: new L.Toolbar2({
             actions: [Save, Undo, Redo, Discard]
         })
     },
     addHooks() {
         const startDraw = (form) => {
+            if (!form) {
+                this.disable();
+                return;
+            }
+
             this._shape = this._map.editTools.startPolygon();
             this._shape.info = form;
             action.prototype.addHooks.call(this);
@@ -354,13 +367,18 @@ L.Toolbar2.DrawAction.Polygon = action.extend({
 
 L.Toolbar2.DrawAction.Rectangle = action.extend({
     options: {
-        toolbarIcon: {html: 'R'},
+        toolbarIcon: {html: '<div style="color: black">▮</div>'},
         subToolbar: new L.Toolbar2({
             actions: [Discard]
         })
     },
     addHooks() {
         const startDraw = (form) => {
+            if (!form) {
+                this.disable();
+                return;
+            }
+
             this._shape = this._map.editTools.startRectangle();
             this._shape.info = form;
             action.prototype.addHooks.call(this);
@@ -372,13 +390,18 @@ L.Toolbar2.DrawAction.Rectangle = action.extend({
 
 L.Toolbar2.DrawAction.Circle = action.extend({
     options: {
-        toolbarIcon: {html: 'C'},
+        toolbarIcon: {html: '<div style="color: black">●</div>'},
         subToolbar: new L.Toolbar2({
             actions: [Discard]
         })
     },
     addHooks() {
         const startDraw = (form) => {
+            if (!form) {
+                this.disable();
+                return;
+            }
+
             this._shape = this._map.editTools.startCircle();
             this._shape.info = form;
             action.prototype.addHooks.call(this);

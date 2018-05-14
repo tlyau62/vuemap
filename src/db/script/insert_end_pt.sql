@@ -10,5 +10,5 @@ with endpt as (
   from endpt, edge
 )
 insert into road(geom, topo_geom)
-select geom, topology.toTopoGeom(geom, 'road_topo', 1, 1e-5) as topo_geom
+select geom, topology.toTopoGeom(geom, 'road_topo', 1, 5e-5) as topo_geom
 from joint_line;

@@ -24,7 +24,7 @@ BEGIN
   FOR r IN SELECT * FROM road LOOP
     BEGIN
       UPDATE road
-	  SET topo_geom = topology.toTopoGeom(geom, 'road_topo', 1, 1e-5)
+	  SET topo_geom = topology.toTopoGeom(geom, 'road_topo', 1, 5e-5)
       WHERE id = r.id;
     EXCEPTION
       WHEN OTHERS THEN

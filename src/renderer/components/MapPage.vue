@@ -1,10 +1,8 @@
 <template>
     <div id="wrapper">
         <header>
-            <a @click="goBack">Go back</a>
-            <p>map name:{{$route.params.name}}, location: {{location}}</p>
+            <button @click="goBack" class="btn btn-link">Back</button>
         </header>
-
         <div id="map"></div>
     </div>
 </template>
@@ -21,6 +19,7 @@
     import './MapPage/Toolbar/QueryToolbar/QueryToolbar'
     import './MapPage/Toolbar/PathToolbar/PathToolbar'
     import './MapPage/Toolbar/PathToolbar/PathInfoControl'
+    import './MapPage/Control/MapInfo.js'
     import db from 'db/db'
 
     export default {
@@ -56,8 +55,17 @@
             // fix marker
             fixMarkerIcon();
 
+            // add map name to map
+            map.mapName = mapName;
+            map.mapLocation = location;
+
             // add drawn layer
             this.drawnItems = L.featureGroup().addTo(map);
+
+            // add map control
+            L.control.mapInfo({
+                position: 'topright'
+            }).addTo(map);
 
             // add tiles
             const baseTile = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -77,9 +85,9 @@
             });
 
             // add query toolbars
-            new L.Toolbar2.QueryToolbar({
-                position: 'topleft'
-            }).addTo(map);
+            // new L.Toolbar2.QueryToolbar({
+            //     position: 'topleft'
+            // }).addTo(map);
 
             // add draw, edit toolbars
             new L.Toolbar2.DrawToolbar({
@@ -355,11 +363,11 @@
 
 <style>
     header {
-        height: 10vh;
+        height: 6vh;
     }
 
     #map {
-        height: 90vh;
+        height: 94vh;
     }
 
     .mouse-marker {

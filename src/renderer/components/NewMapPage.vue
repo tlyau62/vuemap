@@ -11,7 +11,7 @@
 
                 <div class="form-group">
                     <label for="location">Road starting location</label>
-                    <input type="text" id="location" class="form-control mx-sm-3"
+                    <input type="text" id="location" class="form-control mx-sm-3" readonly
                            :value="!selectedLocation ? 'empty' : selectedLocation.toString()" style="width: 250px">
                 </div>
 

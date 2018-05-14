@@ -48,6 +48,7 @@
             };
         },
 
+
         computed: {
             getTypes() {
                 const geom_type = this.geom_type;
@@ -56,7 +57,7 @@
                 if (geom_type === 'circle') {
                     types = ['building'];
                 } else if (geom_type === 'polyline') {
-                    types = ['main road', 'side road'];
+                    types = ['main road', 'side road', 'stream'];
                 } else if (geom_type === 'polygon') {
                     types = ['building', 'river'];
                 } else if (geom_type === 'rectangle') {
@@ -65,6 +66,9 @@
                     console.log('error: getType');
                     this.types = undefined;
                 }
+
+                // init type
+                this.feature.type = types[0];
 
                 return types;
             }

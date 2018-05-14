@@ -8,7 +8,8 @@ L.Toolbar2.PathToolbar = L.Toolbar2.Control.extend({
         actions: [
             L.Toolbar2.PathAction.GenRoad,
             L.Toolbar2.PathAction.StartPoint,
-            L.Toolbar2.PathAction.EndPoint
+            L.Toolbar2.PathAction.EndPoint,
+            L.Toolbar2.PathAction.ClearPath
         ],
         className: 'path-toolbar'
     }

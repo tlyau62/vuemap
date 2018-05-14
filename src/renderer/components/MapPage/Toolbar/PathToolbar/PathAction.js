@@ -41,13 +41,13 @@ const action = L.Toolbar2.Action.extend({
 
             // check using which route service
             if (realStart === dists[0] && realEnd === dists[1]) {
-                this._calPath('google', realStart.latlng, realEnd.latlng);
+                this._calPath('google', startLatlng, endLatlng);
             } else if (realStart === dists[0] && realEnd === dists[3]) {
-                this._calPath('mix1', realStart.latlng, realEnd.latlng, midLatlng);
+                this._calPath('mix1', startLatlng, endLatlng, midLatlng);
             } else if (realStart === dists[2] && realEnd === dists[1]) {
-                this._calPath('mix2', realStart.latlng, realEnd.latlng, midLatlng);
+                this._calPath('mix2', startLatlng, endLatlng, midLatlng);
             } else {
-                this._calPath('pg', realStart.latlng, realEnd.latlng);
+                this._calPath('pg', startLatlng, endLatlng);
             }
 
             /**
@@ -143,6 +143,7 @@ const action = L.Toolbar2.Action.extend({
     },
 
     _insertEndPoint(endpt) {
+        console.log(endpt);
         return db.query(eval('`' + require('db/script/insert_end_pt.sql') + '`'));
     },
 
@@ -192,9 +193,10 @@ const action = L.Toolbar2.Action.extend({
         const pathgeom = [];
 
         await db.query('BEGIN;');
-        await this._insertEndPoint(startLatlng);
-        await this._insertEndPoint(endLatlng);
+        await this._insertEndPoint(startLatlng); // distance maybe zero (mid latlng or too close to road)
+        await this._insertEndPoint(endLatlng); // same as above
         const results = (await db.query(eval('`' + require('db/script/dij.sql') + '`'))).rows;
+
         results.forEach((path) => {
             pathgeom.push(L.geoJson(JSON.parse(path.geojson)));
         });
@@ -243,7 +245,7 @@ L.Toolbar2.PathAction.StartPoint = action.extend({
 
     options: {
         toolbarIcon: {
-            html: 'S'
+            html: '<div>STA</div>'
         }
     },
 
@@ -298,7 +300,7 @@ L.Toolbar2.PathAction.EndPoint = action.extend({
 
     options: {
         toolbarIcon: {
-            html: 'E'
+            html: '<div>END</div>'
         }
     },
 
@@ -354,13 +356,37 @@ L.Toolbar2.PathAction.GenRoad = action.extend({
 
     options: {
         toolbarIcon: {
-            html: 'G'
+            html: '<div>ANL</div>'
         }
     },
 
     addHooks() {
         db.query(require('db/script/analyze_road_network'));
         alert('finish');
+    }
+
+});
+
+L.Toolbar2.PathAction.ClearPath = action.extend({
+
+    options: {
+        toolbarIcon: {
+            html: '<div>CLR</div>'
+        }
+    },
+
+    addHooks() {
+        if (this._map.path.startMarker) {
+            this._map.path.startMarker.remove();
+            this._map.path.startMarker = null;
+        }
+        if (this._map.path.endMarker) {
+            this._map.path.endMarker.remove();
+            this._map.path.endMarker = null;
+        }
+        if (this._map.path.pathLayer) {
+            this._map.path.pathLayer.remove();
+        }
     }
 
 });

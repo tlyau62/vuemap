@@ -47,7 +47,9 @@ L.Toolbar2.EditAction.Edit = action.extend({
     addHooks() {
         const roadStartLatLng = this._map.road.roadStartMarker.getLatLng();
 
-        this._shape.originalLatlng = this._shape.getLatLngs().slice().map((latlng) => L.latLng([latlng.lat, latlng.lng]));
+        console.log(this._shape.getLatLngs());
+
+        this._shape.originalLatlng = this._backupOriginalLatlng();
         this._shape.enableEdit();
         this._registerEvent(
             this._shape,
@@ -67,6 +69,26 @@ L.Toolbar2.EditAction.Edit = action.extend({
     removeHooks() {
         this._map.removeLayer(this._tooltip);
         this._destroyEvents();
+    },
+
+    _backupOriginalLatlng() {
+        const layer = this._shape;
+        let originalLatlng;
+
+        if (layer instanceof L.Circle) {
+            originalLatlng = layer.getLatLngs()[0].slice().map((latlng) => L.latLng([latlng.lat, latlng.lng]));
+        } else if ((layer instanceof L.Polyline) && !(layer instanceof L.Polygon)) {
+            originalLatlng = layer.getLatLngs().slice().map((latlng) => L.latLng([latlng.lat, latlng.lng]));
+        } else if ((layer instanceof L.Polygon) && !(layer instanceof L.Rectangle)) {
+            originalLatlng = layer.getLatLngs()[0].slice().map((latlng) => L.latLng([latlng.lat, latlng.lng]));
+        } else if (layer instanceof L.Rectangle) {
+            originalLatlng = layer.getLatLngs()[0].slice().map((latlng) => L.latLng([latlng.lat, latlng.lng]));
+        } else {
+            originalLatlng = undefined;
+            console.log('error: backupOriginalLatlng');
+        }
+
+        return originalLatlng;
     },
 
     _createTooltip() {
@@ -197,7 +219,7 @@ L.Toolbar2.EditAction.Discard = action.extend({
         // const map = this._map;
         const shape = this._shape;
 
-        if (shape.editor && shape.editor.editEnabled()) {
+        if (shape.editEnabled()) {
             shape.disableEdit();
             shape.setLatLngs(this._shape.originalLatlng);
         }

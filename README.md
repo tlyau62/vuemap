@@ -26,16 +26,18 @@ draw
     - state
         - save
         - undo
-    - *add name, layer, priority, color
     - snapping
     - solving conflicts
         - edit road line breaking the road start marker
-        - remove road line breaking the road network
+        - *remove road line breaking the road network
+        - *intersections
+    - *draw panel
+       - show color, name
 - query
     - place
     - elevation
 - analysis
-    - *shortest path
+    - shortest path
     - distance
     - bearing
     - elevation profile

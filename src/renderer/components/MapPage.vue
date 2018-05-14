@@ -20,6 +20,7 @@
     import './MapPage/Toolbar/PathToolbar/PathToolbar'
     import './MapPage/Toolbar/PathToolbar/PathInfoControl'
     import './MapPage/Control/MapInfo.js'
+    import randomColor from 'randomColor'
     import db from 'db/db'
 
     export default {
@@ -77,7 +78,7 @@
                 maxZoom: 18
             });
 
-            L.control.layers({drawnItems: this.drawnItems, previewTile}).addTo(map);
+            L.control.layers({drawnItems: this.drawnItems, previewTile}, null, {position: 'bottomleft'}).addTo(map);
 
             map.on('baselayerchange', (e) => {
                 previewTile.setUrl(`http://localhost:20008/tile/${mapName}/{z}/{x}/{y}.png?updated=${new Date().getTime()}`);
@@ -340,13 +341,18 @@
 
                 features.forEach(feature => {
                     const {id, latlngs, radius, geom_type, type, name} = feature;
-                    let geom;
-                    
+                    let geom, color;
+
+                    // get color
+                    color = randomColor({
+                        hue: 'random'
+                    });
+
                     // create layer
                     if (geom_type === 'circle') {
-                        geom = L[geom_type](latlngs, radius).addTo(this.drawnItems);
+                        geom = L[geom_type](latlngs, radius, {color}).addTo(this.drawnItems);
                     } else {
-                        geom = L[geom_type](latlngs).addTo(this.drawnItems);
+                        geom = L[geom_type](latlngs, {color}).addTo(this.drawnItems);
                     }
 
                     // embed info
@@ -362,6 +368,7 @@
                     this.idLookup[geom._leaflet_id] = {id, geom_type};
                 });
 
+                console.log(this.drawnItems);
             }
         }
     }

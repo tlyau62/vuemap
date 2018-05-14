@@ -65,6 +65,7 @@
     "leaflet-tooltip": "^1.0.4",
     "pg": "^7.4.1",
     "popper.js": "^1.14.3",
+    "randomcolor": "^0.5.3",
     "raw-loader": "^0.5.1",
     "spinkit": "^1.2.5",
     "vue": "^2.3.3",

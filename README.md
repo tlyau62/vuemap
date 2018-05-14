@@ -27,12 +27,12 @@ draw
         - save
         - undo
     - snapping
-    - solving conflicts
+    - *solving conflicts
         - edit road line breaking the road start marker
         - *remove road line breaking the road network
         - *intersections
     - *draw panel
-       - show color, name
+       - *show color, name
 - query
     - place
     - elevation

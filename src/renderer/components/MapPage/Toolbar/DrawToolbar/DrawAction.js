@@ -284,11 +284,20 @@ L.Toolbar2.DrawAction.Polyline = action.extend({
 
             // add snap
             let snap, snapMarker;
+            const drawnItemsLayers = map.road.drawnItems._layers;
+            const roadLayers = [];
+
+            for (let id in drawnItemsLayers) {
+                if (!drawnItemsLayers.hasOwnProperty(id)) continue;
+                const currentLayer = drawnItemsLayers[id];
+                if ((currentLayer instanceof L.Polyline) && !(currentLayer instanceof L.Polygon)) {
+                    roadLayers.push(currentLayer);
+                }
+            }
 
             const roadGuideLayers =
-                map.road.drawnItems.getLayers().length === 0 ?
-                    map.road.roadStartMarker :
-                    map.road.drawnItems;
+                roadLayers.length === 0 ?
+                    map.road.roadStartMarker : L.featureGroup(roadLayers);
 
             if (this._snapMarker) {
                 snapMarker = this._snapMarker;

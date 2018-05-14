@@ -178,6 +178,8 @@ const action = L.Toolbar2.Action.extend({
                 } else {
                     text = 'Click and drag to draw a rectangle';
                 }
+            } else if (layer instanceof L.Marker) {
+                text = 'Click to drop a marker';
             } else {
                 text = undefined;
                 console.log('error: getTooltipText');
@@ -408,5 +410,28 @@ L.Toolbar2.DrawAction.Circle = action.extend({
         };
 
         action.prototype._createForm.call(this, 'circle', startDraw);
+    }
+});
+
+L.Toolbar2.DrawAction.Marker = action.extend({
+    options: {
+        toolbarIcon: {html: '<div style="color: black">⚐</div>'},
+        subToolbar: new L.Toolbar2({
+            actions: [Discard]
+        })
+    },
+    addHooks() {
+        const startDraw = (form) => {
+            if (!form) {
+                this.disable();
+                return;
+            }
+
+            this._shape = this._map.editTools.startMarker();
+            this._shape.info = form;
+            action.prototype.addHooks.call(this);
+        };
+
+        action.prototype._createForm.call(this, 'marker', startDraw);
     }
 });

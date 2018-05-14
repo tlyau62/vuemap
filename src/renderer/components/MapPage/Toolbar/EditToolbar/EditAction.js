@@ -47,8 +47,6 @@ L.Toolbar2.EditAction.Edit = action.extend({
     addHooks() {
         const roadStartLatLng = this._map.road.roadStartMarker.getLatLng();
 
-        console.log(this._shape.getLatLngs());
-
         this._shape.originalLatlng = this._backupOriginalLatlng();
         this._shape.enableEdit();
         this._registerEvent(
@@ -60,7 +58,6 @@ L.Toolbar2.EditAction.Edit = action.extend({
                 }
             }
         );
-
 
         this._createTooltip();
         this._map.removeLayer(this.toolbar);
@@ -83,11 +80,13 @@ L.Toolbar2.EditAction.Edit = action.extend({
             originalLatlng = layer.getLatLngs()[0].slice().map((latlng) => L.latLng([latlng.lat, latlng.lng]));
         } else if (layer instanceof L.Rectangle) {
             originalLatlng = layer.getLatLngs()[0].slice().map((latlng) => L.latLng([latlng.lat, latlng.lng]));
+        } else if (layer instanceof L.Marker) {
+            const latlng = layer.getLatLng();
+            originalLatlng = L.latLng([latlng.lat, latlng.lng])
         } else {
             originalLatlng = undefined;
             console.log('error: backupOriginalLatlng');
         }
-
         return originalLatlng;
     },
 
@@ -129,11 +128,20 @@ L.Toolbar2.EditAction.Edit = action.extend({
         function getTooltipText(layer, started) {
 
             if (!started) {
-                return `
+                if (layer instanceof L.Marker) {
+                    return `
+                        <div>
+                            <div>Move the marker by dragging</div>
+                            <div>Remember to save the changes</div>
+                        </div>`;
+                } else {
+                    return `
                     <div>
                         <div>Create/remove a vertex by clicking</div>
                         <div>Move a vertex/feature by dragging</div>
+                        <div>Remember to save the changes</div>
                     </div>`;
+                }
             }
 
             let text;
@@ -166,6 +174,13 @@ L.Toolbar2.EditAction.Edit = action.extend({
                         ${layerDetail.detailTemplate}
                         <div>---</div>
                         <div>Release to <span style="color: #B3E5FC">finish</span> drawing</div>
+                    </div>`;
+            } else if (layer instanceof L.Marker) {
+                text = `
+                    <div>
+                        ${layerDetail.detailTemplate}
+                        <div>---</div>
+                        <div>Click to <span style="color: #B3E5FC">finish</span> drawing</div>
                     </div>`;
             } else {
                 text = undefined;
@@ -221,7 +236,12 @@ L.Toolbar2.EditAction.Discard = action.extend({
 
         if (shape.editEnabled()) {
             shape.disableEdit();
-            shape.setLatLngs(this._shape.originalLatlng);
+
+            if (shape instanceof L.Marker) {
+                shape.setLatLng(this._shape.originalLatlng);
+            } else {
+                shape.setLatLngs(this._shape.originalLatlng);
+            }
         }
 
         action.prototype.addHooks.call(this);

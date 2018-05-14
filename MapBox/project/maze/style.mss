@@ -1,3 +1,15 @@
+#POLYGON {
+  text-name: [name];
+  text-face-name: 'Arial Regular';
+  text-fill: #5d5d5d;
+  text-placement: line;
+  text-size: 10;
+  text-dy: 12;
+  text-max-char-angle-delta: 15;  
+  text-halo-radius: 1;
+  text-halo-fill: #fff;
+}
+
 #POLYGON[type='building'] {
 	polygon-fill: #b5b5b5;
 }
@@ -46,3 +58,23 @@
   }
 }
 
+#POINT {
+  [zoom>=16] {
+    marker-width:30;
+    [type='food'] {
+      marker-file: url('icons\food.png');
+    }
+    [type='bank'] {
+      marker-file: url('icons\bank.png');
+    }
+    [type='health'] {
+      marker-file: url('icons\health.png');
+    }
+    [type='hotel'] {
+      marker-file: url('icons\hotel.png');
+    }
+    [type='shop'] {
+      marker-file: url('icons\shop.png');
+    }
+  }
+}

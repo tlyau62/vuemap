@@ -62,6 +62,8 @@
                     types = ['building', 'river'];
                 } else if (geom_type === 'rectangle') {
                     types = ['building'];
+                } else if (geom_type === 'marker') {
+                    types = ['food', 'health', 'bank', 'hotel', 'shop'];
                 } else {
                     console.log('error: getType');
                     this.types = undefined;

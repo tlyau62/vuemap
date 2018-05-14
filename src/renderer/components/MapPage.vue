@@ -211,7 +211,7 @@
                 // decide geomtype
                 if (layerType === 'polyline') {
                     geomType = 'LINESTRING';
-                } else if (layerType === 'circle') {
+                } else if (layerType === 'circle' || layerType === 'marker') {
                     geomType = 'POINT';
                 } else {
                     geomType = 'POLYGON';
@@ -234,6 +234,10 @@
                     geomText = latlng.lng + ' ' + latlng.lat;
 
                     return `ST_Buffer(ST_GeomFromText('${geomType}(${geomText})', 4326)::geography, ${radius})::geometry`
+                } else if (layerType === 'marker') {
+                    geomText = latlng.lng + ' ' + latlng.lat;
+
+                    return `ST_GeomFromText('${geomType}(${geomText})', 4326)`;
                 }
 
             },
@@ -249,8 +253,8 @@
                     result = layer._latlngs[0]
                         .map(latlng => `{${latlng.lat}, ${latlng.lng}}`)
                         .join();
-                } else if (layerType === 'circle') {
-                    result = `{${layer._latlng.lat}, ${layer._latlng.lng}}`;
+                } else if (layerType === 'circle' || layerType === 'marker') {
+                    result = `${layer._latlng.lat}, ${layer._latlng.lng}`;
                 }
 
                 return '{' + result + '}';
@@ -266,6 +270,8 @@
                     type = 'polygon';
                 } else if (layer instanceof L.Rectangle) {
                     type = 'rectangle';
+                } else if (layer instanceof L.Marker) {
+                    type = 'marker';
                 } else {
                     type = undefined;
                     console.log('error: getLayerType');
@@ -335,10 +341,10 @@
                 features.forEach(feature => {
                     const {id, latlngs, radius, geom_type, type, name} = feature;
                     let geom;
-
+                    
                     // create layer
                     if (geom_type === 'circle') {
-                        geom = L.circle(latlngs[0], {radius: radius}).addTo(this.drawnItems);
+                        geom = L[geom_type](latlngs, radius).addTo(this.drawnItems);
                     } else {
                         geom = L[geom_type](latlngs).addTo(this.drawnItems);
                     }

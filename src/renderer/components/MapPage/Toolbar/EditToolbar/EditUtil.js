@@ -78,6 +78,10 @@ export class LayerDetail {
                 area: Math.round(L.GeometryUtil.geodesicArea(shapeLatlngs)),
                 perimeter: Math.round(L.GeometryUtil.length(shapeLatlngs.concat([shapeLatlngs[0]])))
             };
+        } else if (layer instanceof L.Marker) {
+            detail = {
+                latlng: layer.getLatLng().toString()
+            };
         } else {
             console.log('error: calcDetail');
             detail = undefined;
@@ -92,7 +96,7 @@ export class LayerDetail {
                     unit = 'm';
                 } else if (key === 'area') {
                     unit = 'm^2';
-                } else if (key === 'chart') {
+                } else if (key === 'chart' || key === 'latlng') {
                     continue;
                 } else {
                     unit = undefined;

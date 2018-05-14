@@ -72,17 +72,15 @@ L.Toolbar2.EditAction.Edit = action.extend({
         const layer = this._shape;
         let originalLatlng;
 
-        if (layer instanceof L.Circle) {
-            originalLatlng = layer.getLatLngs()[0].slice().map((latlng) => L.latLng([latlng.lat, latlng.lng]));
-        } else if ((layer instanceof L.Polyline) && !(layer instanceof L.Polygon)) {
+        if ((layer instanceof L.Polyline) && !(layer instanceof L.Polygon)) {
             originalLatlng = layer.getLatLngs().slice().map((latlng) => L.latLng([latlng.lat, latlng.lng]));
         } else if ((layer instanceof L.Polygon) && !(layer instanceof L.Rectangle)) {
             originalLatlng = layer.getLatLngs()[0].slice().map((latlng) => L.latLng([latlng.lat, latlng.lng]));
         } else if (layer instanceof L.Rectangle) {
             originalLatlng = layer.getLatLngs()[0].slice().map((latlng) => L.latLng([latlng.lat, latlng.lng]));
-        } else if (layer instanceof L.Marker) {
+        } else if (layer instanceof L.Marker || layer instanceof L.Circle) {
             const latlng = layer.getLatLng();
-            originalLatlng = L.latLng([latlng.lat, latlng.lng])
+            originalLatlng = L.latLng([latlng.lat, latlng.lng]);
         } else {
             originalLatlng = undefined;
             console.log('error: backupOriginalLatlng');

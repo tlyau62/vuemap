@@ -78,6 +78,33 @@
       "srs": "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs",
       "advanced": {},
       "name": "LINESTRING"
+    },
+    {
+      "extent": [
+        114.108882066212,
+        22.4023136294177,
+        114.112565517426,
+        22.4056675417362
+      ],
+      "Datasource": {
+        "type": "postgis",
+        "table": "(select * from feature where geometrytype(geom) = 'POINT') as POINT",
+        "key_field": "id",
+        "geometry_field": "geom",
+        "extent_cache": "dynamic",
+        "extent": "",
+        "dbname": "maze",
+        "host": "localhost",
+        "port": "5432",
+        "user": "postgres",
+        "password": "admin"
+      },
+      "id": "POINT",
+      "class": "",
+      "srs-name": "WGS84",
+      "srs": "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs",
+      "advanced": {},
+      "name": "POINT"
     }
   ],
   "scale": 1,

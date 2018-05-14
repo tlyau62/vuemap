@@ -1,24 +1,32 @@
 <template>
     <div id="wrapper">
         <form @submit.prevent="save()">
-            <div>
-                <span>Name</span>:
-                <input type="text" v-model="layer.info.name"/>
+            <div class="form-group row">
+                <label for="name" class="col-sm-2 col-form-label">Name</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control-plaintext" id="name" v-model="layer.info.name">
+                </div>
             </div>
-            <div>
-                <span>Type</span>:
-                <input type="text" v-model="layer.info.type"/>
+            <div class="form-group row">
+                <label for="type" class="col-sm-2 col-form-label">Type</label>
+                <div class="col-sm-10">
+                    <input type="text" readonly class="form-control-plaintext" id="type" v-model="layer.info.type">
+                </div>
             </div>
-            <div v-for="(value, key) in detailWithoutChart">
-                <span>{{ key }}</span>: {{ value }}
+            <div class="form-group row" v-for="(value, key) in detailWithoutChart">
+                <label :for="key" class="col-sm-2 col-form-label">{{key}}</label>
+                <div class="col-sm-10">
+                    <input type="text" readonly class="form-control-plaintext" :id="key" :value="value">
+                </div>
             </div>
-
             <div v-if="detail.chart">
                 <h6>Cross section chart</h6>
                 <div id="chart">loading...</div>
             </div>
 
-            <input type="submit" value="submit"/>
+            <div style="text-align: center">
+                <input type="submit" value="save changes" class="btn btn-primary mb-2"/>
+            </div>
         </form>
     </div>
 </template>
@@ -45,7 +53,8 @@
                 }
 
                 return subset;
-            }
+            },
+
         },
 
         mounted() {

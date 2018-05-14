@@ -22,7 +22,7 @@ draw
         - point/marker (mark name)
         - line (create road)
         - polygon (create building)
-        - *marker (icon)
+        - marker (icon)
     - state
         - save
         - undo

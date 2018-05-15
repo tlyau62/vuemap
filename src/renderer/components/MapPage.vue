@@ -131,11 +131,13 @@
                 });
 
                 // draw layer
-                layer.setStyle({
-                    color: randomColor({
-                        hue: 'random'
-                    })
-                });
+                if (!(layer instanceof L.Marker)) {
+                    layer.setStyle({
+                        color: randomColor({
+                            hue: 'random'
+                        })
+                    });
+                }
                 this.drawnItems.addLayer(layer);
                 this.map.fire('DRAW_PANEL.UPDATE');
 

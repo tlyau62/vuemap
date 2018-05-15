@@ -38,12 +38,22 @@
                     if (!drawnItemsLayers.hasOwnProperty(key)) continue;
                     if (!drawnItemsLayers[key].info || !drawnItemsLayers[key].options) continue;
 
-                    layers.push({
-                        layer: drawnItemsLayers[key],
-                        name: drawnItemsLayers[key].info.name || 'no name',
-                        type: drawnItemsLayers[key].info.type || 'no type',
-                        color: drawnItemsLayers[key].options.color || '#000000',
-                    });
+                    if (drawnItemsLayers[key] instanceof L.Marker) {
+                        layers.push({
+                            layer: drawnItemsLayers[key],
+                            name: drawnItemsLayers[key].info.name || 'no name',
+                            type: drawnItemsLayers[key].info.type || 'no type',
+                            color: 'blue',
+                        });
+                    } else {
+                        layers.push({
+                            layer: drawnItemsLayers[key],
+                            name: drawnItemsLayers[key].info.name || 'no name',
+                            type: drawnItemsLayers[key].info.type || 'no type',
+                            color: drawnItemsLayers[key].options.color || '#000000',
+                        });
+                    }
+
                 }
 
                 this.layers = layers;

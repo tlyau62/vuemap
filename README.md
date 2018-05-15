@@ -28,10 +28,10 @@ draw
         - undo
     - *snapping
       - edit  
-    - *solving conflicts
+    - solving conflicts
         - edit road line breaking the road start marker
-        - *remove road line breaking the road network
-        - *intersections
+        - remove road line breaking the road network
+        - intersections
     - draw panel
        - show color, name
 - query
@@ -42,6 +42,8 @@ draw
     - distance
     - bearing
     - elevation profile
+- total dist ui
+- random color on new draw
 
 # db schema
 - map: (db_name, starting location)

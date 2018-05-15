@@ -1,6 +1,6 @@
 <template>
-    <div id="wrapper">
-        <div>Total distance: {{dist}}m</div>
+    <div id="wrapper" class="card">
+        <div v-show="dist">Total distance: {{dist}}m</div>
     </div>
 </template>
 
@@ -18,8 +18,7 @@
 
         mounted() {
             this.map.on('PATH_INFO.GENERATED', (e) => {
-                this.dist = e.info.dist;
-                console.log(e);
+                this.dist = Math.round(e.info.dist);
             });
         },
 

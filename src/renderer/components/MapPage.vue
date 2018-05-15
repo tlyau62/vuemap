@@ -78,9 +78,7 @@
             }).addTo(map);
 
             // add tiles
-            const baseTile = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            }).addTo(map);
+            const baseTile = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {}).addTo(map);
 
             const previewTile = L.tileLayer(`http://localhost:20008/tile/${mapName}/{z}/{x}/{y}.png?updated=${new Date().getTime()}`, {
                 minZoom: 0,
@@ -121,7 +119,10 @@
 
                 const isConflict = await this.checkConflicts(null, layer, 'commit'); // conflict
 
-                if (isConflict) return;
+                if (isConflict) {
+                    this.map.removeLayer(layer);
+                    return;
+                }
 
                 // add edit action
                 layer.on('click', (e) => {
@@ -130,6 +131,11 @@
                 });
 
                 // draw layer
+                layer.setStyle({
+                    color: randomColor({
+                        hue: 'random'
+                    })
+                });
                 this.drawnItems.addLayer(layer);
                 this.map.fire('DRAW_PANEL.UPDATE');
 
@@ -160,12 +166,17 @@
                 }
             });
 
-            map.on('EDIT_ACTION.SAVE', (e) => {
+            map.on('EDIT_ACTION.SAVE', async (e) => {
                 const layers = e.layers._layers;
                 const idLookup = self.idLookup;
 
                 for (let key in layers) {
                     if (!layers.hasOwnProperty(key)) continue;
+
+                    // self intersect
+                    // const isConflict = await this.checkConflicts(null, layer, 'commit'); // conflict
+                    // if (isConflict) continue;
+
                     self.editFeature(idLookup[key].id, layers[key]);
                 }
             });
@@ -378,7 +389,7 @@
                     rows = (await db.query(`
                         select st_intersects((select geom from feature where id = ${id}), ${this.layerToGeomText(roadStartMarker)})`
                     )).rows;
-                    
+
                     if (rows[0]['st_intersects'] === true) {
                         isConflict = true;
                         alert('disconnected road');

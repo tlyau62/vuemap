@@ -1,1 +1,5 @@
-point-file could not be found: 'C:\Users\yaurf\github\vuemap\MapBox\project\osm_origin\icons\shop.png' in style 'POINT' in MarkersSymbolizer at line 118
+Postgis Plugin: PSQL error:
+ERROR:  column "name" does not exist
+LINE 1: SELECT ST_AsBinary("geom") AS geom,"id","name","type" FROM (...
+                                                ^
+Full sql was: 'SELECT ST_AsBinary("geom") AS geom,"id","name","type" FROM (select * from feature where geometrytype(geom) = 'POLYGON') as POLYGON WHERE "geom" && ST_SetSRID('BOX3D(114.065989706752 22.3758343460192,114.129577563176 22.4134669237448)'::box3d, 4326)'

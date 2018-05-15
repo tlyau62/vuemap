@@ -1,5 +1,7 @@
 import {LayerDetail} from './EditUtil'
 import L from "leaflet";
+import 'leaflet-geometryutil/src/leaflet.geometryutil'
+import 'leaflet-snap/leaflet.snap'
 
 const action = L.Toolbar2.Action.extend({
     initialize(map, shape, options) {
@@ -41,6 +43,7 @@ L.Toolbar2.EditAction.Edit = action.extend({
 
     initialize(map, shape, options) {
         this._tooltip = null;
+        this._snap = null;
         action.prototype.initialize.call(this, map, shape, options);
     },
 
@@ -49,6 +52,7 @@ L.Toolbar2.EditAction.Edit = action.extend({
 
         this._shape.originalLatlng = this._backupOriginalLatlng();
         this._shape.enableEdit();
+
         this._registerEvent(
             this._shape,
             'editable:vertex:dragstart',
@@ -59,11 +63,80 @@ L.Toolbar2.EditAction.Edit = action.extend({
             }
         );
 
+        // add snap
+        const map = this._map;
+        let snap, snapMarker;
+        const drawnItemsLayers = map.road.drawnItems._layers;
+        const roadLayers = [];
+
+        for (let id in drawnItemsLayers) {
+            if (!drawnItemsLayers.hasOwnProperty(id)) continue;
+            const currentLayer = drawnItemsLayers[id];
+            if ((currentLayer instanceof L.Polyline) && !(currentLayer instanceof L.Polygon) && this._shape !== currentLayer) {
+                roadLayers.push(currentLayer);
+            }
+        }
+
+        const roadGuideLayers =
+            roadLayers.length === 0 ?
+                map.road.roadStartMarker : L.featureGroup(roadLayers);
+
+        if (this._snapMarker) {
+            snapMarker = this._snapMarker;
+        } else {
+            snapMarker = this._snapMarker = L.marker(map.getCenter(), {
+                icon: map.editTools.createVertexIcon({className: 'leaflet-div-icon leaflet-drawing-icon'}),
+                opacity: 1,
+                zIndexOffset: 1000
+            });
+        }
+
+        snap = this._snap = new L.Handler.MarkerSnap(map);
+        snap.addGuideLayer(roadGuideLayers);
+        snap.watchMarker(snapMarker);
+
+        let snapLatlng;
+
+        this._registerEvent(
+            snapMarker,
+            'snap',
+            (e) => {
+                snapLatlng = snapMarker.getLatLng();
+                snapMarker.addTo(map);
+            }
+        )._registerEvent(
+            snapMarker,
+            'unsnap',
+            (e) => {
+                snapLatlng = null;
+                snapMarker.remove();
+            }
+        )._registerEvent(
+            map,
+            'mousemove',
+            (e) => snapMarker.setLatLng(e.latlng)
+        )._registerEvent(
+            this._shape,
+            'editable:vertex:dragend',
+            (e) => {
+                if (snapLatlng) {
+                    this._shape.addLatLng(snapLatlng);
+                    this._shape.editor.reset();
+                }
+            }
+        );
+
+
         this._createTooltip();
         this._map.removeLayer(this.toolbar);
     },
 
     removeHooks() {
+        if (this._snap) {
+            this._snap.disable();
+            this._snap = null;
+        }
+
         this._map.removeLayer(this._tooltip);
         this._destroyEvents();
     },

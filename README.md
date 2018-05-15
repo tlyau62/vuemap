@@ -26,7 +26,7 @@ draw
     - state
         - save
         - undo
-    - *snapping
+    - snapping
       - edit  
     - solving conflicts
         - edit road line breaking the road start marker

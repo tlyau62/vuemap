@@ -326,6 +326,7 @@ L.Toolbar2.DrawAction.Polyline = action.extend({
                 'click',
                 (e) => {
                     if (this._shape && this._shape.editEnabled()) {
+                        this._shape.addLatLng(e.latlng);
                         return;
                     }
                     this._shape = this._map.editTools.startPolyline(e.latlng);

@@ -1,19 +1,18 @@
 <template>
     <div id="wrapper">
-        <p>Simple map creator</p>
+        <h4>Simple map creator</h4>
         <router-link to="/newmap">create a new map</router-link>
         <br/>
-        <p>open an existing map</p>
+        <p>open an existing map:</p>
         <ul>
             <li v-for="db in dbs">
-                {{db.id}}
+                {{db.id}},
                 <router-link :to="{
                     path: `/map/${db.name}`,
                     query: {lat: db.lat, lng: db.lng}}">
-                    {{ db.name }}
+                    {{ db.name }},
                 </router-link>
-                {{db.lat}}
-                {{db.lng}}
+                Location: {{db.lat}} {{db.lng}}
             </li>
         </ul>
 
@@ -74,7 +73,10 @@
     }
 </script>
 
-<style>
+<style scoped>
+    #wrapper {
+        margin: 1rem;
+    }
     /*@import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro');*/
 
     /** {*/

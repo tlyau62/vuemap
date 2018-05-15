@@ -14,7 +14,7 @@
             <div style="max-width: 200px">
                 <dl class="row">
                     <template v-for="place in address">
-                        <dt class="col-sm-4">{{place.type}}</dt>
+                        <dt class="col-sm-5">{{place.type}}</dt>
                         <dd class="col-sm-7">{{place.name}}</dd>
                     </template>
                 </dl>

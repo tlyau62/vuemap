@@ -368,7 +368,8 @@
                             select 1
                             from feature
                             where st_intersects(feature.geom, ${geomText}) -- conflicts
-                            and not (feature.type in ('main road', 'side road') and '${type}' in ('main road', 'side road')) -- but not both are road
+                            and not ((feature.type in ('main road', 'side road') and '${type}' in ('main road', 'side road')) -- but not both are road
+                                or (feature.type = 'stream' and '${type}' = 'stream'))
                         );
                     `)).rows;
 
@@ -377,31 +378,33 @@
                         alert('intersecting');
                     }
                 } else if (mode === 'delete') {
-                    // >1 connected components
-                    rows = (await db.query(`
-                    with groups as (
-                        select
-                            row_number() over (order by unnest(ST_ClusterWithin(geom, 5e-5))) as id,
-                            (st_dump(unnest(ST_ClusterWithin(geom, 5e-5)))).geom as geom
-                        from feature
-                        where type in ('main road', 'side road') and id != ${id}
-                    )
-                    select id from groups group by id;`
-                    )).rows;
+                    if (type === 'main road' || type === 'side road') {
+                        // >1 connected components
+                        rows = (await db.query(`
+                            with groups as (
+                                select
+                                    row_number() over (order by unnest(ST_ClusterWithin(geom, 5e-5))) as id,
+                                    (st_dump(unnest(ST_ClusterWithin(geom, 5e-5)))).geom as geom
+                                from feature
+                                where type in ('main road', 'side road') and id != ${id}
+                            )
+                            select id from groups group by id;`
+                        )).rows;
 
-                    if (rows.length > 1) {
-                        isConflict = true;
-                        alert('disconnected road');
-                    }
+                        if (rows.length > 1) {
+                            isConflict = true;
+                            alert('disconnected road');
+                        }
 
-                    // delete road from start point
-                    rows = (await db.query(`
+                        // delete road from start point
+                        rows = (await db.query(`
                         select st_intersects((select geom from feature where id = ${id}), ${this.layerToGeomText(roadStartMarker)})`
-                    )).rows;
+                        )).rows;
 
-                    if (rows[0]['st_intersects'] === true) {
-                        isConflict = true;
-                        alert('disconnected road');
+                        if (rows[0]['st_intersects'] === true) {
+                            isConflict = true;
+                            alert('disconnected road');
+                        }
                     }
                 } else if (mode === 'edit') {
                     // intersecting
@@ -419,6 +422,31 @@
                         isConflict = true;
                         alert('intersecting');
                     }
+
+                    if (type === 'main road' || type === 'side road') {
+                        // >1 connected components
+                        rows = (await db.query(`
+                            with newroad as (
+                                select geom
+                                from feature
+                                where type in ('main road', 'side road') and id != ${id}
+                                union
+                                (select ${geomText} as geom)
+                            ), groups as (
+                                select
+                                    row_number() over (order by unnest(ST_ClusterWithin(geom, 5e-5))) as id,
+                                    (st_dump(unnest(ST_ClusterWithin(geom, 5e-5)))).geom as geom
+                                from newroad
+                            )
+                            select id from groups group by id;`
+                        )).rows;
+
+                        if (rows.length > 1) {
+                            isConflict = true;
+                            alert('disconnected road');
+                        }
+                    }
+
                 } else {
                     console.log('error: checkConflicts');
                     return undefined;
@@ -524,5 +552,9 @@
     .path-toolbar {
         /*display: none;*/
         margin-bottom: 0;
+    }
+
+    .edit-toolbar {
+        width: 150px !important;
     }
 </style>

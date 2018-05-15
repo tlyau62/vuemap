@@ -11,6 +11,7 @@ L.Toolbar2.EditToolbar = L.Toolbar2.Popup.extend({
             L.Toolbar2.EditAction.Save,
             L.Toolbar2.EditAction.Delete,
             L.Toolbar2.EditAction.Discard
-        ]
-    }
+        ],
+        className: 'edit-toolbar'
+    },
 });

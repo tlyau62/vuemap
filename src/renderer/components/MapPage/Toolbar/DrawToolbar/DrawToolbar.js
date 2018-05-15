@@ -11,7 +11,8 @@ L.Toolbar2.DrawToolbar = L.Toolbar2.Control.extend({
             L.Toolbar2.DrawAction.Polygon,
             L.Toolbar2.DrawAction.Rectangle,
             L.Toolbar2.DrawAction.Circle,
-            L.Toolbar2.DrawAction.Marker
+            L.Toolbar2.DrawAction.Marker,
+            L.Toolbar2.DrawAction.AutoRoad
         ],
         className: 'draw-toolbar'
     }

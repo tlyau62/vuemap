@@ -9,6 +9,7 @@ import 'leaflet-tooltip/dist/tooltip.css'
 import 'leaflet-toolbar'
 import 'leaflet-toolbar/dist/leaflet.toolbar.css'
 import DrawNewLayer from './DrawNewLayer.vue'
+import db from 'db/db'
 
 const action = L.Toolbar2.Action.extend({
     initialize(map, options) {
@@ -295,9 +296,7 @@ L.Toolbar2.DrawAction.Polyline = action.extend({
                 }
             }
 
-            const roadGuideLayers =
-                roadLayers.length === 0 ?
-                    map.road.roadStartMarker : L.featureGroup(roadLayers);
+            const roadGuideLayers = L.featureGroup([map.road.roadStartMarker].concat(roadLayers));
 
             if (this._snapMarker) {
                 snapMarker = this._snapMarker;
@@ -443,5 +442,75 @@ L.Toolbar2.DrawAction.Marker = action.extend({
         };
 
         action.prototype._createForm.call(this, 'marker', startDraw);
+    }
+});
+
+L.Toolbar2.DrawAction.AutoRoad = action.extend({
+    options: {
+        toolbarIcon: {html: '<div style="color: black">⚐</div>'},
+        subToolbar: new L.Toolbar2({
+            actions: [Discard]
+        })
+    },
+    addHooks() {
+        const map = this._map;
+        const selection_geom = this._map.editTools.startPolygon();
+
+        this._registerEvent(
+            map,
+            'editable:drawing:commit',
+            (e) => {
+                const startDraw = async (form) => {
+                    if (!form) {
+                        this.disable();
+                        return;
+                    }
+
+                    const latlngs = selection_geom._latlngs;
+                    let geomText = latlngs[0]
+                        .map(latlng => `${latlng.lng} ${latlng.lat}`).join();
+                    geomText += (',' + latlngs[0][0].lng + ' ' + latlngs[0][0].lat);
+                    geomText = '(' + geomText + ')';
+                    geomText = `ST_GeomFromText('POLYGON(${geomText})', 4326)`;
+
+                    const response = await db.query(`
+                    with samplepoints as (
+                        select *, ST_GeneratePoints(geom, ceiling(st_area(geom::geography) / 1)::int) as pts
+                        from feature
+                        where geometrytype(geom) = 'POLYGON'
+                    ), vor as (
+                        select (st_dump(ST_VoronoiPolygons(st_collect(pts)))).geom as geom
+                        from samplepoints
+                    ), dump_vor as (
+                        select (st_dump(vor.geom)).geom as geom
+                        from vor
+                    ), road_polygon as (
+                        select b.id, st_union(a.geom) as vor_geom
+                        from dump_vor a inner join samplepoints b on (st_intersects(a.geom, b.geom))
+                        group by b.id
+                    ), road_line as (
+                        select st_intersection(a.vor_geom, b.vor_geom) as road_geom
+                        from road_polygon a inner join road_polygon b on (a.id != b.id and st_intersects(a.vor_geom, b.vor_geom))
+                    ), road_line_clean as (
+                        select (st_dump(st_linemerge(st_union(road_geom)))).geom
+                        from road_line
+                    )
+                    select ST_AsGeoJSON(st_intersection(geom, ${geomText})) as geojson
+                    from road_line_clean
+                    `);
+
+                    selection_geom.remove();
+
+                    response.rows.forEach((row) => {
+                        const reverse = JSON.parse(row.geojson).coordinates.map((latlng) => [latlng[1], latlng[0]]);
+                        const layer = L.polyline(reverse);
+                        layer.info = form;
+                        map.fire('DRAW_ACTION.COMMIT', {layer});
+                    });
+                };
+
+                action.prototype._createForm.call(this, 'polyline', startDraw);
+            }
+        );
     }
 });

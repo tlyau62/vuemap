@@ -47,7 +47,7 @@
         mounted() {
             const self = this;
 
-            const map = L.map('map').setView([22.4022, 114.1073], 15);
+            const map = L.map('map').setView([22.239449, 114.211761], 15);
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             }).addTo(map);
@@ -188,4 +188,5 @@
 </script>
 
 <style scoped>
+
 </style>

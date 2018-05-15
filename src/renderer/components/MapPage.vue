@@ -176,8 +176,15 @@
                     if (!layers.hasOwnProperty(key)) continue;
 
                     // self intersect
-                    // const isConflict = await this.checkConflicts(null, layer, 'commit'); // conflict
-                    // if (isConflict) continue;
+                    const isConflict = await this.checkConflicts(idLookup[key].id, layers[key], 'edit'); // conflict
+                    if (isConflict) {
+                        if (layers[key] instanceof L.Marker) {
+                            layers[key].setLatLng(layers[key].originalLatlng);
+                        } else {
+                            layers[key].setLatLngs(layers[key].originalLatlng);
+                        }
+                        continue;
+                    }
 
                     self.editFeature(idLookup[key].id, layers[key]);
                 }
@@ -395,6 +402,22 @@
                     if (rows[0]['st_intersects'] === true) {
                         isConflict = true;
                         alert('disconnected road');
+                    }
+                } else if (mode === 'edit') {
+                    // intersecting
+                    rows = (await db.query(`
+                        select exists (
+                            select 1
+                            from feature
+                            where id != ${id}
+                            and st_intersects(feature.geom, ${geomText}) -- conflicts
+                            and not (feature.type in ('main road', 'side road') and '${type}' in ('main road', 'side road')) -- but not both are road
+                        );
+                    `)).rows;
+
+                    if (rows[0].exists === true) {
+                        isConflict = true;
+                        alert('intersecting');
                     }
                 } else {
                     console.log('error: checkConflicts');

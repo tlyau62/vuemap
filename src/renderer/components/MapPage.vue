@@ -8,6 +8,7 @@
 </template>
 
 <script>
+    import Vue from 'vue';
     import L from 'leaflet'
     import 'leaflet/dist/leaflet.css'
     import 'leaflet-editable/src/Leaflet.Editable'
@@ -24,6 +25,7 @@
     import RoadStartIcon from '../assets/marker-icon-2x-yellow.png';
     import ShadowIcon from '../assets/marker-shadow.png';
     import randomColor from 'randomColor'
+    import Alert from './Common/Alert'
     import db from 'db/db'
 
     export default {
@@ -375,7 +377,7 @@
 
                     if (rows[0].exists === true) {
                         isConflict = true;
-                        alert('intersecting');
+                        this.alertBox('overlapping occurs');
                     }
                 } else if (mode === 'delete') {
                     if (type === 'main road' || type === 'side road') {
@@ -393,7 +395,7 @@
 
                         if (rows.length > 1) {
                             isConflict = true;
-                            alert('disconnected road');
+                            this.alertBox('disconnected road occurs');
                         }
 
                         // delete road from start point
@@ -403,7 +405,7 @@
 
                         if (rows[0]['st_intersects'] === true) {
                             isConflict = true;
-                            alert('disconnected road');
+                            this.alertBox('disconnected road occurs');
                         }
                     }
                 } else if (mode === 'edit') {
@@ -420,7 +422,7 @@
 
                     if (rows[0].exists === true) {
                         isConflict = true;
-                        alert('intersecting');
+                        this.alertBox('intersecting occurs');
                     }
 
                     if (type === 'main road' || type === 'side road') {
@@ -443,7 +445,7 @@
 
                         if (rows.length > 1) {
                             isConflict = true;
-                            alert('disconnected road');
+                            this.alertBox('disconnected road occurs');
                         }
                     }
 
@@ -520,6 +522,13 @@
                 });
 
                 this.map.fire('DRAW_PANEL.UPDATE');
+            },
+
+            alertBox(msg) {
+                console.log(msg);
+                new (Vue.extend(Alert))({
+                    propsData: {msg}
+                }).$mount();
             }
         }
     }

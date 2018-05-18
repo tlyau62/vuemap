@@ -2,55 +2,8 @@
 
 > An electron-vue project
 
-## first page
-- create a new map
-    - map name
-    - select location
-    - create new db
-    - go to main page
-- choose existing map
-    - go to main page
-
-## main page
-draw
-
-## new map page
-- import google map
-- draw, edit
-    - draw toolbar
-    - layers (line, polygon, marker)
-        - point/marker (mark name)
-        - line (create road)
-        - polygon (create building)
-        - marker (icon)
-    - state
-        - save
-        - undo
-    - snapping
-      - edit  
-    - solving conflicts
-        - edit road line breaking the road start marker
-        - remove road line breaking the road network
-        - intersections
-    - draw panel
-       - show color, name
-- query
-    - place
-    - elevation
-- analysis
-    - shortest path
-    - distance
-    - bearing
-    - elevation profile
-- total dist ui
-- random color on new draw
-
-# db schema
-- map: (db_name, starting location)
-- db_name: (layer, priority, text, geom)
-
 #### Build Setup
-
+for application
 ``` bash
 # install dependencies
 npm install
@@ -60,9 +13,41 @@ npm run dev
 
 # build electron application for production
 npm run build
-
-
 ```
+
+for database setup
+- database username: postgres, password: admin
+- make sure a table mapdb is created under database postgres
+```
+-- Table: public.mapdb
+
+-- DROP TABLE public.mapdb;
+
+CREATE TABLE public.mapdb
+(
+    id bigint NOT NULL DEFAULT nextval('mapdb_id_seq'::regclass),
+    name character varying COLLATE pg_catalog."default",
+    locat_geom geometry(Geometry,4326),
+    CONSTRAINT mapdb_pkey PRIMARY KEY (id)
+)
+WITH (
+    OIDS = FALSE
+)
+TABLESPACE pg_default;
+
+ALTER TABLE public.mapdb
+    OWNER to postgres;
+```
+
+
+#### Deploy
+- software needs
+    - postgis + postgres
+    - tillmill
+- steps
+    1. clone this resp
+    2. open tillmill
+    3. npm run dev
 
 ---
 

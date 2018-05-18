@@ -447,7 +447,7 @@ L.Toolbar2.DrawAction.Marker = action.extend({
 
 L.Toolbar2.DrawAction.AutoRoad = action.extend({
     options: {
-        toolbarIcon: {html: '<div style="color: black">⚐</div>'},
+        toolbarIcon: {html: '<div style="color: black">A</div>'},
         subToolbar: new L.Toolbar2({
             actions: [Discard]
         })
@@ -456,15 +456,17 @@ L.Toolbar2.DrawAction.AutoRoad = action.extend({
         const map = this._map;
         const selection_geom = this._map.editTools.startPolygon();
 
-        this._registerEvent(
-            map,
-            'editable:drawing:commit',
-            (e) => {
-                const startDraw = async (form) => {
-                    if (!form) {
-                        this.disable();
-                        return;
-                    }
+        const startDraw = (form) => {
+
+            if (!form) {
+                this.disable();
+                return;
+            }
+
+            this._registerEvent(
+                map,
+                'editable:drawing:commit',
+                async (e) => {
 
                     const latlngs = selection_geom._latlngs;
                     let geomText = latlngs[0]
@@ -478,6 +480,7 @@ L.Toolbar2.DrawAction.AutoRoad = action.extend({
                         select *, ST_GeneratePoints(geom, ceiling(st_area(geom::geography) / 1)::int) as pts
                         from feature
                         where geometrytype(geom) = 'POLYGON'
+                            and st_intersects(${geomText}, geom)
                     ), vor as (
                         select (st_dump(ST_VoronoiPolygons(st_collect(pts)))).geom as geom
                         from samplepoints
@@ -507,10 +510,15 @@ L.Toolbar2.DrawAction.AutoRoad = action.extend({
                         layer.info = form;
                         map.fire('DRAW_ACTION.COMMIT', {layer});
                     });
-                };
 
-                action.prototype._createForm.call(this, 'polyline', startDraw);
-            }
-        );
+                    this.disable();
+
+                }
+            );
+
+        };
+
+        action.prototype._createForm.call(this, 'polyline', startDraw);
     }
 });
+
